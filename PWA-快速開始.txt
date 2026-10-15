@@ -1,0 +1,17 @@
+財富花園 Wealth Garden — PWA 快速開始
+
+你現在拿到的是已加入 PWA 安裝功能的「原始碼專案」，不是 APK，也不是已發布的網頁。
+注意：原始碼根目錄的 index.html 不能直接雙擊開啟；需要先編譯、部署到 HTTPS 網站。
+
+最簡單的方式：
+1. 把本資料夾的全部內容（包含隱藏的 .github）上傳到 GitHub Repository 的根目錄。
+2. Repository → Settings → Pages → Source 選 GitHub Actions。
+3. Repository → Actions →「PWA — Build & Deploy GitHub Pages」→ Run workflow。
+4. 工作流程成功後，到 Settings → Pages 複製 HTTPS 網址。
+5. Android 用 Chrome／Edge 開啟 → 選單「安裝應用程式」。
+   iPhone 用 Safari 開啟 → 分享 →「加入主畫面」。
+
+完整說明：docs/PWA-DEPLOY.md
+
+本版資料只儲存在自己的裝置／瀏覽器 localStorage，不是雲端同步服務。
+請在系統設定定期匯出 JSON 備份；清除網站資料、移除 PWA 或改網址可能遺失資料。

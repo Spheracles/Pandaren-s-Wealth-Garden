@@ -1,0 +1,17 @@
+node_modules/
+dist/
+release/
+*.log
+.env
+.env.*
+!.env.example
+# signing secrets — never commit
+*.jks
+*.keystore
+*.p12
+keystore.properties
+android/keystore.properties
+.DS_Store
+.idea/
+.vscode/
+test-results/

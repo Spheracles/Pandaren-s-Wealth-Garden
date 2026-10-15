@@ -1,0 +1,23 @@
+財富花園 PWA v1.0.0 — 本次修改與驗證紀錄
+
+已加入：
+- Web App Manifest（繁體中文 App 名稱、獨立視窗、相對路徑 scope）
+- 192/512/Maskable/Apple Touch PNG 安裝圖示
+- Vite 正式建置後自動產生版本化 Service Worker，快取靜態檔案並支援離線啟動
+- 發現版本更新後以使用者確認更新，更新前同步本機待儲存資料
+- Android／iOS 安裝指引與「系統設定 → 安裝財富花園 PWA」介面
+- 瀏覽器端 JSON／CSV 本機檔案下載，保留複製文字備援
+- GitHub Pages 自動建置及部署工作流程
+- PWA 版隱私及資料備份風險說明
+
+本機驗證：
+- JavaScript 語法檢查：通過
+- TypeScript 修改檔案語法轉譯：通過（未執行完整型別檢查）
+- Manifest JSON／圖示實際尺寸：通過
+- PWA 測試 3 項：通過（模擬 dist 的產生器／靜態結構驗證）
+- 完整 Vite 建置與手機安裝：未驗證
+  原因：本機無法存取 npm registry（EAI_AGAIN），缺少原專案依賴，不能產生真實 dist。
+  已提供 GitHub Actions 工作流程，在可連線的 GitHub 雲端環境安裝依賴、執行既有測試及建置。
+
+重要：這是可部署 PWA 的「原始碼」，不是已部署的 HTTPS 網站。
+必須先依 docs/PWA-DEPLOY.md 上傳並讓 GitHub Actions 建置成功，才可以用手機安裝。

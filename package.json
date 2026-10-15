@@ -1,0 +1,62 @@
+{
+  "name": "wealth-garden",
+  "displayName": "財富花園 Wealth Garden",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "WEALTH GARDEN — NEON CITY 個人財富管理 App（金錢・時間・心力三維紀錄）",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts tests/*.test.mjs",
+    "build": "npm run typecheck && npm test && vite build && npm run pwa:generate",
+    "preview": "vite preview",
+    "pwa:generate": "node scripts/generate-pwa.mjs",
+    "pwa:verify": "node scripts/verify-pwa.mjs",
+    "version:sync": "node scripts/version-sync.mjs",
+    "icons": "node resources/gen-icons.mjs",
+    "android:sync": "npm run version:sync && npm run build && npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:debug": "npm run android:sync && cd android && ./gradlew assembleDebug",
+    "android:release": "npm run android:sync && cd android && ./gradlew clean testReleaseUnitTest assembleRelease",
+    "release:verify": "node scripts/verify-release.mjs",
+    "package:line": "node scripts/package-line.mjs",
+    "package:source": "node scripts/package-source.mjs",
+    "scan:secrets": "node scripts/scan-secrets.mjs",
+    "test:mobile": "node tests/e2e/mobile-test.mjs"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.2",
+    "@capacitor/app": "8.1.1",
+    "@capacitor/core": "8.5.2",
+    "@capacitor/filesystem": "8.1.3",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/keyboard": "8.0.5",
+    "@capacitor/network": "8.0.1",
+    "@capacitor/preferences": "8.0.1",
+    "@capacitor/share": "8.0.2",
+    "@capacitor/splash-screen": "8.0.2",
+    "@fontsource/chakra-petch": "^5.2.0",
+    "@fontsource/jetbrains-mono": "^5.2.0",
+    "@fontsource/noto-sans-tc": "^5.2.0",
+    "htm": "3.1.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.2",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "jszip": "^3.10.1",
+    "playwright": "^1.55.0",
+    "sharp": "^0.34.0",
+    "tsx": "^4.20.0",
+    "typescript": "~6.0.3",
+    "vite": "^7.1.7"
+  }
+}
