@@ -1,77 +1,107 @@
-# 財富花園 Wealth Garden — PWA + Android（NEON CITY）
+# 財富花園 Wealth Garden · NEON CITY
 
-個人財富作業系統：金錢・時間・心力三維紀錄、資產培育計畫、財富花園植物卡、AI 策略師（需核准的草案）。
-本專案同時支援 **PWA（Android／iPhone／桌面瀏覽器加入主畫面）** 與 **Capacitor 8 Android APK**。PWA 需要先建置並部署到 HTTPS 網站；Android APK 另行編譯。
+以「金錢・時間・心力」三維紀錄個人財富的網頁應用，霓虹藍光的賽博龐克介面。
+可以直接用瀏覽器開啟，也可以安裝成 **PWA**（加入主畫面、離線開啟）。
 
-| 項目 | 值 |
-|---|---|
-| App 名稱 | 財富花園 Wealth Garden |
-| Package ID | `com.wealthgarden.app` |
-| 版本 | 1.0.0（versionCode 10000） |
-| 發行通道 | **內部測試版**（沒有帳號與雲端同步，不是正式多人服務） |
-| Android | 最低 7.0（API 24），目標 API 36 |
-| 語言／幣別 | 臺灣繁體中文／TWD |
+**網站：** https://spheracles.github.io/Pandaren-s-Wealth-Garden/
 
-## 狀態一覽
+| 項目 | 內容 |
+| --- | --- |
+| 版本 | 2.0.0（NEON CITY 網頁版，取代 1.0.0 PWA 介面） |
+| 發行通道 | **內部測試版**：沒有帳號與雲端同步，不是正式多人服務 |
+| 語言／幣別 | 臺灣繁體中文／TWD（支援外幣與手動匯率） |
+| 部署 | 推送到 `main` 後由 GitHub Actions 自動建置並發布到 GitHub Pages |
 
-- ✅ 全部核心功能、財務規則（17 項自動測試）、Android 體驗處理、發行與打包流程。
-- ⚠️ APK **尚未在這份交付中編譯**：建立此專案的環境沒有 Android SDK，且無法連到 Google Maven。
-  請依下方步驟在 Android Studio 或 GitHub Actions 建置；流程會拒絕產生未簽章或 Debug 簽章的 Release。
-- ⏳ 多人帳號、雲端同步、Gemini／OpenAI、Email、每日備份：後端草案在 `supabase/`，**尚未部署**。
+> **使用前請先了解**
+> - 首次開啟是**示範模式**，所有金額、帳戶、公司名稱都是**虛構示範資料**。按「使用我的資料」即可清空示範資料、開始記自己的帳。
+> - 資料只保存在**你目前使用的瀏覽器／裝置**（localStorage），**不是雲端資料庫**，不會上傳。清除網站資料、移除 PWA 或換瀏覽器都可能遺失資料，請定期到「系統設定」匯出 JSON 備份。
+> - **AI 未連線**：「AI 財富策略師」的分析由規則式引擎在瀏覽器內計算，不是 AI 回答；網站沒有、也不會放任何 API 金鑰。正式串接 Gemini／OpenAI 必須透過伺服器端，並需另外核准。
+> - 從 1.0.0 PWA 升級：舊版存在同一個瀏覽器的資料會自動帶入新版（舊資料保持原樣、不會被刪除）。
 
-**想要手機直接安裝成 PWA？請先看 [`docs/PWA-DEPLOY.md`](docs/PWA-DEPLOY.md)：GitHub Pages 可自動建置並部署 HTTPS 網址，不用自行安裝 Android Studio。**
+## 功能
 
-完整說明：[`docs/ANDROID-BUILD.md`](docs/ANDROID-BUILD.md)（建置與簽章）、
-[`docs/TEST-REPORT.md`](docs/TEST-REPORT.md)（測試結果與裝置驗收清單）、
-[`docs/STATUS.md`](docs/STATUS.md)（已完成／未完成／待部署）、
-[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)、[`docs/PRIVACY.md`](docs/PRIVACY.md)、[`docs/COST.md`](docs/COST.md)。
+| 頁面 | 內容 |
+| --- | --- |
+| 總覽控制台 | 淨資產、本月收支與現金流、12 個月淨資產走勢、現金流趨勢、資產結構、三維雷達、洞察 |
+| 收入與支出 | 交易紀錄（搜尋／類型／類別／帳戶／日期篩選）、收支圖表、重複紀錄、對帳、回收區、常用範本 |
+| 三維資源 | 金錢・時間・心力的配置與分佈、時薪換算、心力評分（-5～+5，主觀序位，不加總） |
+| 資產與負債 | 帳戶、資產、負債、市價評價、外幣手動匯率 |
+| 財富花園 | 收入來源與培育計畫以植物呈現；植物只依「已驗證」的里程碑與實際收入成長 |
+| 資產培育計畫 | 計畫、里程碑、任務、投入金額／時間；預期與已實現收益分開記錄 |
+| AI 財富策略師 | 規則式分析終端機；草案一律進入「待核准」，經你核准才會寫入正式資料 |
+| 分析報告 | 月報、預算執行、類別排行 |
+| 通知中心 | 預算、訂閱、待核准草案等提醒 |
+| 系統設定 | 類別、預算、時薪、隱私、AI 資料授權、CSV 匯入、JSON／CSV 匯出、異動紀錄 |
 
-## 快速開始
+其他：指令面板、隱私遮罩、手機底部導覽與快速記帳、離線提示、尊重系統「減少動態效果」設定。
 
-需要：Node.js 20.19+（建議 22）、JDK 21、Android Studio（含 Android SDK 36 與 build-tools 36）。
+### PWA
 
-```bash
-npm install                 # 第一次會產生 package-lock.json，請一併提交
-npm run dev                 # 瀏覽器開發（http://localhost:5173，非正式 PWA）
-npm run build               # 正式建置 PWA：dist/ + sw.js + manifest
-npm run pwa:verify          # 驗證可部署的 dist 靜態檔
-npm run preview             # 本機測試已建置 PWA（http://localhost:4173）
-npm test                    # 財務引擎 17 項驗收測試
-npm run android:sync        # 型別檢查 + 測試 + 建置網頁 + 同步到 android/
-npm run android:open        # 用 Android Studio 開啟
-npm run android:debug       # 產生 Debug APK（可與正式版並存安裝，名稱顯示「財富花園 DEBUG」）
-```
+- **安裝**：Android／電腦版 Chrome、Edge 會出現「安裝」提示，或從瀏覽器選單選「安裝應用程式」；iPhone 用 Safari → 分享 →「加入主畫面」。
+- **離線**：Service Worker 只快取網站本身的靜態檔案（HTML、JS、CSS、圖示）；財務資料永遠不放進快取。離線時字型改用系統字型。
+- **更新**：有新版本時會詢問「立即更新／稍後」，更新前會先存好正在編輯的資料，不會在輸入中途自動重新整理。
 
-正式版（需要你自己的簽章金鑰，見 `docs/ANDROID-BUILD.md`）：
+## 帳務規則（`src/engine`，有自動測試）
 
-```bash
-npm run android:release     # → android/app/build/outputs/apk/release/WealthGarden-v1.0.0.apk
-npm run release:verify      # 驗證 v2/v3 簽章、非 Debug 憑證、套件名稱與版本
-npm run package:line        # → release/WealthGarden-Android-v1.0.0.zip（LINE 分享用）
-npm run package:source      # → release/WealthGarden-Source-v1.0.0.zip
-```
+- 金額一律以「分」為整數計算，避免浮點誤差。
+- 帳戶轉帳、信用卡繳款、投資轉入、外幣兌換**不算收入或支出**；信用卡繳款不會重複認列消費。
+- 外幣交易保存原幣金額、實際匯率與換算後的新臺幣金額。
+- 市價評價只影響資產價值與淨資產，不計入收入或現金流。
+- 快照日之前的匯入交易只計入歷史統計，不改變帳戶餘額。
+- AI／規則式建議只能產生草案，不能直接修改交易、帳戶或資產。
+
+## 外觀參數（選用）
+
+網址後面加參數即可調整，例如 `?glow=柔和&motion=0`：
+
+| 參數 | 可用值 | 預設 |
+| --- | --- | --- |
+| `glow` | `柔和`、`標準`、`強烈`（霓虹光暈強度） | `標準` |
+| `motion` | `0` 關閉動態效果 | 開啟 |
+| `scanlines` | `1` 開啟掃描線 | 關閉 |
+| `density` | `舒適`、`緊湊` | `舒適` |
+| `accent` | 6 位色碼，例如 `2EE6C8` | `4FC3FF` |
 
 ## 專案結構
 
 ```
-src/engine/      財務引擎（TypeScript，純函式，所有計算與寫入規則）
-src/platform/    Android 平台層：儲存、返回鍵、鍵盤、網路、分享、觸覺回饋、HTTPS API 用戶端
-src/ui/app.js    畫面（React + htm）
-src/styles/      NEON CITY 設計樣式
-public/          PWA manifest、安裝圖示
-scripts/generate-pwa.mjs  產生離線 Service Worker
-tests/           財務規則驗收測試（node:test）
-android/         Capacitor Android 專案（簽章、版本、權限、圖示、啟動畫面）
-scripts/         版本同步、簽章驗證、LINE ZIP／原始碼 ZIP 打包、秘密掃描
-release-templates/  分享包內的安裝說明、更新紀錄、版本資訊範本
-supabase/        多人後端草案（RLS 資料表、AI 代理）— 未部署
-.github/workflows/android.yml    CI：測試、Debug APK、簽章 Release、打包
-.github/workflows/pwa-pages.yml  CI：測試、PWA 建置、GitHub Pages 發布
+src/engine/            帳務引擎（TypeScript 純函式，與 Android 版共用的規則）
+src/ui/                介面：template / pages / dialogs 模板、styles.css、logic.js（畫面邏輯）
+src/runtime/           把設計模板渲染成 React 畫面的小型執行環境
+src/platform/pwa.js    Service Worker 註冊、更新提示、安裝提示
+src/main.js            網站進入點
+public/                manifest.webmanifest 與安裝圖示
+scripts/build.mjs      展開模板巨集、以 esbuild 打包、輸出 dist/
+scripts/generate-pwa.mjs  依建置結果產生離線 Service Worker（dist/sw.js）
+scripts/verify-pwa.mjs    檢查可部署的 dist/
+scripts/scan-secrets.mjs  檢查儲存庫沒有金鑰、密碼或使用者資料
+tests/                 帳務規則、PWA、介面模板測試；tests/e2e/ 瀏覽器煙霧測試
 ```
 
-## PWA 安裝／資料提醒
+## 本機開發
 
-- ZIP 中的 `index.html` 是原始碼入口，不是可直接雙擊開啟的 App；正式網站使用 **`dist/index.html`** 並透過 HTTPS 提供。
-- PWA 的資料儲存於瀏覽器 `localStorage`；清除網站資料、刪除 App 或換裝置可能遺失資料，請經常匯出 JSON 備份。
-- PWA 的原生安裝提示及離線功能需在正式站台（HTTPS 或 localhost）測試，不是 `file://`。
-- PWA、Android APK、不同網站網址之間**不會自動共享本機資料**。
+需要 Node.js 20.19 以上（建議 22）。
+
+```bash
+npm install
+npm test            # 帳務引擎 17 項 + PWA 3 項 + 介面模板 6 項
+npm run build       # 型別檢查 → 測試 → 打包到 dist/ → 產生 sw.js
+npm run preview     # http://localhost:4173 預覽建置結果
+npm run test:e2e    # （選用）瀏覽器煙霧測試，需要 Playwright
+npm run scan:secrets
+```
+
+## 部署
+
+`.github/workflows/pwa-pages.yml` 會在每次推送到 `main` 時執行 `npm install`、`npm run build`、PWA 驗證，並把 `dist/` 發布到 GitHub Pages
+（Settings → Pages → Source 需為 **GitHub Actions**）。
+
+## 隱私
+
+GitHub Pages 網站是公開的，任何知道網址的人都能開啟，但每個人的紀錄只存在自己的瀏覽器，彼此看不到。
+同一個 `spheracles.github.io` 網域底下的其他網站與本站共用瀏覽器儲存空間；請勿在公用電腦上記錄真實財務資料。
+網站會向 Google Fonts 載入字型（不會傳送任何財務資料）。
+
+## Android
+
+Android APK（Capacitor）專案另外維護，不在這個儲存庫；1.0.0 版的 Android 相關設定可在本儲存庫的 git 歷史中找到。

@@ -1,17 +1,18 @@
-財富花園 Wealth Garden — PWA 快速開始
+財富花園 Wealth Garden — PWA 快速開始（v2.0.0 NEON CITY 網頁版）
 
-你現在拿到的是已加入 PWA 安裝功能的「原始碼專案」，不是 APK，也不是已發布的網頁。
-注意：原始碼根目錄的 index.html 不能直接雙擊開啟；需要先編譯、部署到 HTTPS 網站。
+網址：https://spheracles.github.io/Pandaren-s-Wealth-Garden/
 
-最簡單的方式：
-1. 把本資料夾的全部內容（包含隱藏的 .github）上傳到 GitHub Repository 的根目錄。
-2. Repository → Settings → Pages → Source 選 GitHub Actions。
-3. Repository → Actions →「PWA — Build & Deploy GitHub Pages」→ Run workflow。
-4. 工作流程成功後，到 Settings → Pages 複製 HTTPS 網址。
-5. Android 用 Chrome／Edge 開啟 → 選單「安裝應用程式」。
-   iPhone 用 Safari 開啟 → 分享 →「加入主畫面」。
+安裝到手機或電腦：
+- Android：用 Chrome／Edge 開啟網址 → 畫面出現「安裝」提示，或選單 →「安裝應用程式」。
+- iPhone／iPad：用 Safari 開啟網址 → 分享 →「加入主畫面」。
+- 電腦：Chrome／Edge 網址列右側的安裝圖示。
 
-完整說明：docs/PWA-DEPLOY.md
+使用須知：
+- 第一次開啟是「示範模式」，所有數字都是虛構資料；按「使用我的資料」開始記自己的帳。
+- 資料只存在這台裝置的瀏覽器，不是雲端同步服務。清除網站資料、移除 PWA 或改網址可能遺失資料，
+  請在「系統設定」定期匯出 JSON 備份。
+- 「AI 財富策略師」目前未連線 AI，分析由規則式引擎在裝置上計算。
+- 從舊版（1.0.0）升級：同一個瀏覽器裡的舊資料會自動帶入新版。
 
-本版資料只儲存在自己的裝置／瀏覽器 localStorage，不是雲端同步服務。
-請在系統設定定期匯出 JSON 備份；清除網站資料、移除 PWA 或改網址可能遺失資料。
+更新網站：修改原始碼後推送到 main，GitHub Actions 會自動建置並發布（約 1～2 分鐘）。
+已安裝的 PWA 會在下次開啟時詢問是否更新。

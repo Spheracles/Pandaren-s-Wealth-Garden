@@ -1,0 +1,284 @@
+<!-- ===== transaction form ===== -->
+@@DLG:tx:{{md.tx.title}}:wide@@
+  <form class="stack" style="gap: 16px" onSubmit="{{h.submitTx}}">
+    @@ERRS:md.tx@@
+    <div class="sect"><span class="lab">交易類型</span><div class="chips" role="group" aria-label="交易類型">@@PICKS:md.tx.types:c@@</div></div>
+    <div class="form">
+      <label class="f">日期<input class="inp" type="date" value="{{md.tx.date}}" onChange="{{md.tx.on.date}}"></label>
+      <label class="f">{{md.tx.amtLabel}}<input class="inp num" inputmode="decimal" placeholder="0" value="{{md.tx.amt}}" onChange="{{md.tx.on.amt}}"><span class="hint">{{md.tx.amtHint}}</span></label>
+      <sc-if value="{{md.tx.isFx}}" hint-placeholder-val="{{ false }}"><label class="f">{{md.tx.toAmtLabel}}<input class="inp num" inputmode="decimal" value="{{md.tx.toAmt}}" onChange="{{md.tx.on.toAmt}}"><span class="hint">{{md.tx.fxHint}}</span></label></sc-if>
+      <label class="f full">說明<input class="inp" placeholder="例如：午餐、房租、接案尾款" value="{{md.tx.desc}}" onChange="{{md.tx.on.desc}}"></label>
+    </div>
+    <sc-if value="{{md.tx.one}}" hint-placeholder-val="{{ true }}">
+      <div class="sect"><span class="lab">帳戶</span><div class="chips" role="group" aria-label="帳戶">@@ACCTS:md.tx.accts:c@@</div></div>
+      <sc-if value="{{md.tx.hasCats}}" hint-placeholder-val="{{ true }}"><div class="sect"><span class="lab">類別</span><div class="chips" role="group" aria-label="類別">@@PICKS:md.tx.cats:c@@</div></div></sc-if>
+    </sc-if>
+    <sc-if value="{{md.tx.two}}" hint-placeholder-val="{{ false }}">
+      <div class="sect"><span class="lab">轉出帳戶</span><div class="chips" role="group" aria-label="轉出帳戶">@@ACCTS:md.tx.froms:c@@</div></div>
+      <div class="sect"><span class="lab">{{md.tx.toLabel}}</span><div class="chips" role="group" aria-label="轉入帳戶">@@ACCTS:md.tx.tos:c@@</div></div>
+    </sc-if>
+    <sc-if value="{{md.tx.foreign}}" hint-placeholder-val="{{ false }}"><div class="note c">@@IS:coin@@<span>{{md.tx.foreignNote}}</span></div></sc-if>
+    <sc-if value="{{md.tx.isCcpay}}" hint-placeholder-val="{{ false }}"><div class="note c">@@IS:shield@@<span>信用卡繳款只會減少銀行存款與信用卡應付款，不會再次認列消費。</span></div></sc-if>
+    <sc-if value="{{md.tx.isTransfer}}" hint-placeholder-val="{{ false }}"><div class="note c">@@IS:swap@@<span>帳戶轉帳不會產生收入或支出。</span></div></sc-if>
+    <sc-if value="{{md.tx.isVal}}" hint-placeholder-val="{{ false }}"><div class="note">@@IS:chart@@<span>未實現評價變動只影響資產價值與淨資產，不計入收入或現金流。</span></div></sc-if>
+    <sc-if value="{{md.tx.isExp}}" hint-placeholder-val="{{ true }}">
+      <div class="flex" style="gap: 20px"><label class="chk"><input type="checkbox" checked="{{md.tx.rec}}" onChange="{{md.tx.on.rec}}">持續性支出</label><label class="chk"><input type="checkbox" checked="{{md.tx.reuse}}" onChange="{{md.tx.on.reuse}}">可能轉化為可重複利用資產</label></div>
+    </sc-if>
+    <sc-if value="{{md.tx.canAlloc}}" hint-placeholder-val="{{ true }}">@@ALLOC:md.tx@@</sc-if>
+    <sc-if value="{{md.tx.notEdit}}" hint-placeholder-val="{{ true }}">
+      <div class="stack" style="gap: 10px">
+        <label class="chk"><input type="checkbox" checked="{{md.tx.withAct}}" onChange="{{md.tx.on.withAct}}">同時記錄這項活動的時間與心力（三維紀錄）</label>
+        <sc-if value="{{md.tx.withAct}}" hint-placeholder-val="{{ false }}">
+          <div class="stack" style="gap: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(148,170,210,.12)">
+            <label class="f" style="max-width: 240px">花費時間（分鐘）<input class="inp num" type="number" min="1" value="{{md.tx.minutes}}" onChange="{{md.tx.on.minutes}}"></label>
+            <div class="sect"><span class="lab">活動類型</span><div class="chips">@@PICKS:md.tx.kinds:c@@</div></div>
+            @@ENERGY:md.tx@@
+          </div>
+        </sc-if>
+        <label class="chk"><input type="checkbox" checked="{{md.tx.saveTpl}}" onChange="{{md.tx.on.saveTpl}}">儲存為常用範本</label>
+      </div>
+    </sc-if>
+    <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">取消</button><button type="submit" class="btn pri">@@IS:check@@{{md.tx.submitLabel}}</button></div>
+  </form>
+@@/DLG@@
+
+<!-- ===== transaction detail / expense x-ray ===== -->
+@@DLG:txd:{{md.txd.title}}:@@
+  @@KV:md.txd.kv:kv@@
+  <div class="sect"><span class="lab">關聯專案</span><sc-for list="{{md.txd.allocs}}" as="x" hint-placeholder-count="1"><div class="flex between small"><span>{{x.name}}</span><span class="num">{{x.v}}</span></div></sc-for><sc-if value="{{md.txd.allocNone}}" hint-placeholder-val="{{ true }}"><span class="small dim">無</span></sc-if></div>
+  <div class="sect"><span class="lab">相關活動</span><sc-for list="{{md.txd.acts}}" as="x" hint-placeholder-count="1"><span class="small">{{x.v}}</span></sc-for><sc-if value="{{md.txd.actsNone}}" hint-placeholder-val="{{ true }}"><span class="small dim">無</span></sc-if></div>
+  <div class="dlg-f">
+    <button type="button" class="btn danger" onClick="{{md.txd.del}}">@@IS:trash@@刪除</button>
+    <sc-if value="{{md.txd.isExp}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn" onClick="{{md.txd.toProject}}">@@IS:leaf@@以此建立培育計畫</button></sc-if>
+    <button type="button" class="btn pri" onClick="{{md.txd.edit}}">@@IS:edit@@編輯</button>
+  </div>
+@@/DLG@@
+
+<!-- ===== activity form ===== -->
+@@DLG:act:{{md.act.title}}:@@
+  <form class="stack" style="gap: 16px" onSubmit="{{h.submitAct}}">
+    @@ERRS:md.act@@
+    <div class="form">
+      <label class="f full">活動名稱<input class="inp" placeholder="例如：學習新技能、散步、加班" value="{{md.act.ftitle}}" onChange="{{md.act.on.title}}"></label>
+      <label class="f">日期<input class="inp" type="date" value="{{md.act.date}}" onChange="{{md.act.on.date}}"></label>
+      <label class="f">花費時間（分鐘）<input class="inp num" type="number" min="1" value="{{md.act.minutes}}" onChange="{{md.act.on.minutes}}"><span class="hint">{{md.act.minHint}}</span></label>
+      <label class="f">實際節省時間（分鐘，選填）<input class="inp num" type="number" min="0" value="{{md.act.saved}}" onChange="{{md.act.on.saved}}"></label>
+    </div>
+    <div class="sect"><span class="lab">活動類型</span><div class="chips">@@PICKS:md.act.kinds:c@@</div></div>
+    @@ENERGY:md.act@@
+    @@ALLOC:md.act@@
+    <p class="tiny dim">心力分數只記錄一次：關聯多個專案時，時間依比例分攤，但心力不會在整體統計中重複計入。</p>
+    <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">取消</button><button type="submit" class="btn pri">{{md.act.submitLabel}}</button></div>
+  </form>
+@@/DLG@@
+
+<!-- ===== activity detail ===== -->
+@@DLG:actd:活動明細:@@
+  @@KV:md.actd.kv:kv@@
+  <div class="dlg-f"><button type="button" class="btn danger" onClick="{{md.actd.del}}">@@IS:trash@@刪除</button><button type="button" class="btn pri" onClick="{{md.actd.edit}}">@@IS:edit@@編輯</button></div>
+@@/DLG@@
+
+<!-- ===== project form ===== -->
+@@DLG:proj:{{md.proj.title}}:@@
+  <form class="stack" style="gap: 16px" onSubmit="{{h.submitProj}}">
+    @@ERRS:md.proj@@
+    <div class="form">
+      <label class="f full">專案名稱<input class="inp" value="{{md.proj.name}}" onChange="{{md.proj.on.name}}"></label>
+      <label class="f full">專案說明<textarea class="inp" value="{{md.proj.desc}}" onChange="{{md.proj.on.desc}}"></textarea></label>
+      <label class="f full">目標<input class="inp" value="{{md.proj.goal}}" onChange="{{md.proj.on.goal}}"></label>
+      <label class="f">預計完成日<input class="inp" type="date" value="{{md.proj.due}}" onChange="{{md.proj.on.due}}"></label>
+      <label class="f">預算（TWD）<input class="inp num" inputmode="decimal" value="{{md.proj.budget}}" onChange="{{md.proj.on.budget}}"></label>
+      <label class="f">預期月收益（TWD，預測值）<input class="inp num" inputmode="decimal" value="{{md.proj.expectedAmt}}" onChange="{{md.proj.on.expectedAmt}}"></label>
+    </div>
+    <div class="sect"><span class="lab">狀態</span><div class="chips">@@PICKS:md.proj.status:c@@</div></div>
+    <label class="f">預期成果與假設<textarea class="inp" value="{{md.proj.expected}}" onChange="{{md.proj.on.expected}}"></textarea><span class="hint">預測不會被計入實際收入，也不會讓植物成長。</span></label>
+    <label class="f">主要風險<textarea class="inp" value="{{md.proj.risks}}" onChange="{{md.proj.on.risks}}"></textarea></label>
+    <label class="chk"><input type="checkbox" checked="{{md.proj.riskFlag}}" onChange="{{md.proj.on.riskFlag}}">標記為需要檢視的風險狀態</label>
+    <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">取消</button><button type="submit" class="btn pri">{{md.proj.submitLabel}}</button></div>
+  </form>
+@@/DLG@@
+
+<!-- ===== confirm ===== -->
+@@DLG:confirm:{{md.conf.title}}:@@
+  <p class="mut">{{md.conf.body}}</p>
+  <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">取消</button><button type="button" class="{{md.conf.okCls}}" onClick="{{h.confirmOk}}">確認</button></div>
+@@/DLG@@
+
+<!-- ===== setup wizard ===== -->
+@@DLG:wiz:{{md.wiz.title}}:@@
+  <div class="wizbar" aria-hidden="true"><sc-for list="{{md.wiz.bar}}" as="b" hint-placeholder-count="10"><i class="{{b.cls}}"></i></sc-for></div>
+  <sc-if value="{{md.wiz.s0}}" hint-placeholder-val="{{ true }}"><div class="stack"><p>財富花園協助你同時管理金錢、時間與心力，並把投入培育成可驗證的成果。</p><p class="small dim">網頁版的資料只保存在這個瀏覽器，不是雲端資料庫，也沒有帳號同步。非必要步驟可以略過，略過的部分會顯示空白狀態，不會填入假數字。</p></div></sc-if>
+  <sc-if value="{{md.wiz.s1}}" hint-placeholder-val="{{ false }}"><div class="stack"><div class="chips"><span class="pk on">TWD 新臺幣</span></div><p class="small dim">第一版以新臺幣為主要幣別；外幣帳戶可在下一步建立。</p></div></sc-if>
+  <sc-if value="{{md.wiz.s2}}" hint-placeholder-val="{{ false }}"><label class="f">參考時薪（TWD）<input class="inp num" inputmode="decimal" placeholder="例如 300" value="{{md.wiz.hourly}}" onChange="{{md.wiz.onHourly}}"><span class="hint">用於換算時間機會成本，不影響現金</span></label></sc-if>
+  <sc-if value="{{md.wiz.s3}}" hint-placeholder-val="{{ false }}">
+    <div class="stack">
+      <sc-for list="{{md.wiz.accounts}}" as="a" hint-placeholder-count="1">
+        <div class="alloc"><label class="f">帳戶名稱<input class="inp" value="{{a.name}}" onChange="{{a.onName}}"></label><div class="sect"><span class="lab">類型</span><div class="chips">@@PICKS:a.kinds:c@@</div></div><div class="sect"><span class="lab">幣別</span><div class="chips">@@PICKS:a.curs:c@@</div></div></div>
+      </sc-for>
+      <div><button type="button" class="btn sm" onClick="{{h.wizAddAcct}}">@@IS:plus@@再新增一個帳戶</button></div>
+    </div>
+  </sc-if>
+  <sc-if value="{{md.wiz.s4}}" hint-placeholder-val="{{ false }}">
+    <div class="stack">
+      <sc-for list="{{md.wiz.balances}}" as="b" hint-placeholder-count="1"><label class="f">{{b.label}}<input class="inp num" inputmode="decimal" value="{{b.val}}" onChange="{{b.onVal}}"></label></sc-for>
+      <sc-if value="{{md.wiz.noBalances}}" hint-placeholder-val="{{ false }}"><p class="small dim">上一步沒有建立帳戶，可略過。</p></sc-if>
+      <p class="tiny dim">今天會成為初始快照日；之後匯入的較早交易不會重複影響餘額。</p>
+    </div>
+  </sc-if>
+  <sc-if value="{{md.wiz.s5}}" hint-placeholder-val="{{ false }}">
+    <div class="stack">
+      <h3>資產</h3>
+      <sc-for list="{{md.wiz.assets}}" as="a" hint-placeholder-count="1"><div class="alloc"><div class="form"><label class="f">名稱<input class="inp" value="{{a.name}}" onChange="{{a.onName}}"></label><label class="f">評價（TWD）<input class="inp num" inputmode="decimal" value="{{a.value}}" onChange="{{a.onValue}}"></label></div><div class="chips">@@PICKS:a.types:c@@</div></div></sc-for>
+      <h3>負債</h3>
+      <sc-for list="{{md.wiz.liabs}}" as="l" hint-placeholder-count="1"><div class="form"><label class="f">名稱<input class="inp" value="{{l.name}}" onChange="{{l.onName}}"></label><label class="f">餘額（TWD）<input class="inp num" inputmode="decimal" value="{{l.balance}}" onChange="{{l.onBalance}}"></label></div></sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{md.wiz.s6}}" hint-placeholder-val="{{ false }}"><div class="chips">@@PICKS:md.wiz.imp:c@@</div></sc-if>
+  <sc-if value="{{md.wiz.s7}}" hint-placeholder-val="{{ false }}"><label class="f">你的第一個財務目標（選填）<input class="inp" placeholder="例如：建立 6 個月緊急預備金" value="{{md.wiz.goal}}" onChange="{{md.wiz.onGoal}}"></label></sc-if>
+  <sc-if value="{{md.wiz.s8}}" hint-placeholder-val="{{ false }}"><div class="stack" style="gap: 4px"><sc-for list="{{md.wiz.consent}}" as="c" hint-placeholder-count="3"><label class="chk"><input type="checkbox" checked="{{c.on}}" onChange="{{c.toggle}}">{{c.label}}</label></sc-for><p class="tiny dim">預設全部不授權，隨時可在設定變更。</p></div></sc-if>
+  <sc-if value="{{md.wiz.s9}}" hint-placeholder-val="{{ false }}"><div class="stack"><p>準備好了。按「完成」後會建立初始快照並進入主控制台。</p><p class="small dim">{{md.wiz.summary}}</p></div></sc-if>
+  <div class="dlg-f">
+    <sc-if value="{{md.wiz.notFirst}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn ghost" onClick="{{h.wizPrev}}">上一步</button></sc-if>
+    <sc-if value="{{md.wiz.canSkip}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn" onClick="{{h.wizNext}}">略過</button></sc-if>
+    <sc-if value="{{md.wiz.notLast}}" hint-placeholder-val="{{ true }}"><button type="button" class="btn pri" onClick="{{h.wizNext}}">下一步</button></sc-if>
+    <sc-if value="{{md.wiz.last}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn pri" onClick="{{h.wizFinish}}">完成</button></sc-if>
+  </div>
+@@/DLG@@
+
+<!-- ===== quick add (phone) ===== -->
+@@DLG:quick:快速記錄:@@
+  <div class="quick">
+    <button type="button" class="btn pri" onClick="{{h.addExpense}}">@@I:down@@支出</button>
+    <button type="button" class="btn" onClick="{{h.addIncome}}">@@I:up@@收入</button>
+    <button type="button" class="btn" onClick="{{h.addTransfer}}">@@I:swap@@轉帳／繳卡費</button>
+    <button type="button" class="btn" onClick="{{h.addActivity}}">@@I:clock@@時間與心力</button>
+  </div>
+  <div class="flex"><sc-for list="{{templates}}" as="tp" hint-placeholder-count="3"><button type="button" class="pk" onClick="{{tp.use}}">{{tp.name}}</button></sc-for></div>
+@@/DLG@@
+
+<!-- ===== more menu (phone) ===== -->
+@@DLG:more:更多功能:@@
+  <div class="rows">
+    <sc-for list="{{moreItems}}" as="n" hint-placeholder-count="6"><button type="button" class="row click" style="min-height: 52px" onClick="{{n.go}}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="{{n.ic}}"></path></svg><span class="grow">{{n.label}}</span><sc-if value="{{n.badge}}" hint-placeholder-val="{{ false }}"><span class="badge">{{n.badge}}</span></sc-if></button></sc-for>
+    <button type="button" class="row click" style="min-height: 52px" onClick="{{h.cmd}}">@@I:search@@<span class="grow">指令面板</span></button>
+  </div>
+@@/DLG@@
+
+<!-- ===== help ===== -->
+@@DLG:help:說明:@@
+  <div class="stack small">
+    <p><b>指令面板</b>：按側欄或頂部的「搜尋指令」開啟，輸入例如 /expense，用方向鍵選擇、Enter 執行。</p>
+    <p><b>帳務規則</b>：信用卡消費在刷卡時認列支出並增加應付款；「信用卡繳款」只減少銀行存款與應付款。帳戶轉帳、換匯、投資本金移動不產生收入或支出。未實現評價只影響淨資產。</p>
+    <p><b>時間</b>：機會成本依參考時薪換算，只供參考，不計入現金。</p>
+    <p><b>心力</b>：-5 ～ +5 的主觀序位評分，只看平均與分布，不加總、不換算金錢。</p>
+    <p><b>資料</b>：網頁版把資料存在你目前的瀏覽器，不是雲端資料庫；清除瀏覽器資料會一併清除，請定期匯出備份。</p>
+    <p><b>AI</b>：目前未連線；畫面上的分析都是規則式統計，並明確標示。</p>
+  </div>
+@@/DLG@@
+
+<!-- ===== export ===== -->
+@@DLG:export:{{md.exp.title}}:wide@@
+  <p class="small dim">檔名建議：<span class="num">{{md.exp.name}}</span>。備份含財務資料，請妥善保管。</p>
+  <textarea id="wg-export" class="inp mono" style="min-height: 320px; font-size: 12px" aria-label="匯出內容" value="{{md.exp.text}}" onChange="{{h.stop}}"></textarea>
+  <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">關閉</button><button type="button" class="btn pri" onClick="{{h.copyExport}}">@@IS:copy@@複製</button></div>
+@@/DLG@@
+
+<!-- ===== import preview ===== -->
+@@DLG:imp:匯入預覽:wide@@
+  <div class="tbl" style="max-height: 50vh; overflow: auto">
+    <div class="tr th" style="grid-template-columns: .4fr .9fr .6fr .9fr 1fr 1.2fr 1.4fr; min-width: 860px"><span>列</span><span>日期</span><span>類型</span><span class="r">金額</span><span>帳戶</span><span>說明</span><span>處理</span></div>
+    <sc-for list="{{md.imp.rows}}" as="r" hint-placeholder-count="4"><div class="tr" style="grid-template-columns: .4fr .9fr .6fr .9fr 1fr 1.2fr 1.4fr; min-width: 860px"><span class="num small">{{r.line}}</span><span class="num small">{{r.date}}</span><span>{{r.type}}</span><span class="r num">{{r.amt}}</span><span class="small">{{r.acct}}</span><span class="small t">{{r.desc}}</span><span class="stack2"><span><span class="chip {{r.tagCls}}">{{r.tag}}</span></span><span class="tiny dim">{{r.note}}</span></span></div></sc-for>
+  </div>
+  <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">取消</button><button type="button" class="btn pri" disabled="{{md.imp.dis}}" onClick="{{h.importCommit}}">{{md.imp.okN}}</button></div>
+@@/DLG@@
+
+<!-- ===== new account ===== -->
+@@DLG:acct:新增帳戶:@@
+  <form class="stack" style="gap: 16px" onSubmit="{{h.submitAccount}}">
+    @@ERRS:md.simple@@
+    <label class="f">帳戶名稱<input class="inp" value="{{md.simple.f.name}}" onChange="{{md.simple.on.name}}"></label>
+    <div class="sect"><span class="lab">類型</span><div class="chips">@@PICKS:md.simple.accKinds:c@@</div></div>
+    <div class="sect"><span class="lab">幣別</span><div class="chips">@@PICKS:md.simple.curs:c@@</div></div>
+    <label class="f">{{md.simple.openingLabel}}<input class="inp num" inputmode="decimal" value="{{md.simple.f.opening}}" onChange="{{md.simple.on.opening}}"></label>
+    <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">取消</button><button type="submit" class="btn pri">新增帳戶</button></div>
+  </form>
+@@/DLG@@
+
+<!-- ===== new asset ===== -->
+@@DLG:asset:新增資產:@@
+  <form class="stack" style="gap: 16px" onSubmit="{{h.submitAsset}}">
+    @@ERRS:md.simple@@
+    <div class="form">
+      <label class="f full">名稱<input class="inp" value="{{md.simple.f.name}}" onChange="{{md.simple.on.name}}"></label>
+      <label class="f">目前評價（TWD）<input class="inp num" inputmode="decimal" value="{{md.simple.f.value}}" onChange="{{md.simple.on.value}}"></label>
+      <label class="f">定期收入／月<input class="inp num" inputmode="decimal" value="{{md.simple.f.monthlyIncome}}" onChange="{{md.simple.on.monthlyIncome}}"></label>
+      <label class="f">維護支出／月<input class="inp num" inputmode="decimal" value="{{md.simple.f.maintenance}}" onChange="{{md.simple.on.maintenance}}"></label>
+    </div>
+    <div class="sect"><span class="lab">類型</span><div class="chips">@@PICKS:md.simple.assetTypes:c@@</div></div>
+    <p class="tiny dim">房產等資產可能有評價，但持有期間也可能是負現金流；定期收入與維護支出請另以交易記錄。</p>
+    <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">取消</button><button type="submit" class="btn pri">新增資產</button></div>
+  </form>
+@@/DLG@@
+
+<!-- ===== new liability ===== -->
+@@DLG:liab:新增負債:@@
+  <form class="stack" style="gap: 16px" onSubmit="{{h.submitLiab}}">
+    @@ERRS:md.simple@@
+    <div class="form">
+      <label class="f full">名稱<input class="inp" value="{{md.simple.f.name}}" onChange="{{md.simple.on.name}}"></label>
+      <label class="f">目前餘額（TWD）<input class="inp num" inputmode="decimal" value="{{md.simple.f.balance}}" onChange="{{md.simple.on.balance}}"></label>
+      <label class="f">年利率 %<input class="inp num" inputmode="decimal" value="{{md.simple.f.rate}}" onChange="{{md.simple.on.rate}}"></label>
+      <label class="f">每期分期金額<input class="inp num" inputmode="decimal" value="{{md.simple.f.installment}}" onChange="{{md.simple.on.installment}}"></label>
+      <label class="f">每月到期日<input class="inp num" type="number" min="1" max="31" value="{{md.simple.f.dueDay}}" onChange="{{md.simple.on.dueDay}}"></label>
+    </div>
+    <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">取消</button><button type="submit" class="btn pri">新增負債</button></div>
+  </form>
+@@/DLG@@
+
+<!-- ===== update valuation ===== -->
+@@DLG:value:{{md.simple.title}}:@@
+  <form class="stack" style="gap: 16px" onSubmit="{{h.submitValue}}">
+    @@ERRS:md.simple@@
+    <label class="f">新評價（TWD）<input class="inp num" inputmode="decimal" value="{{md.simple.f.value}}" onChange="{{md.simple.on.value}}"></label>
+    <p class="tiny dim">評價變動屬於未實現資產評價，只影響淨資產，不計入收入或現金流。</p>
+    <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">取消</button><button type="submit" class="btn pri">確認更新</button></div>
+  </form>
+@@/DLG@@
+
+<!-- ===== update liability balance ===== -->
+@@DLG:lbal:{{md.simple.title}}:@@
+  <form class="stack" style="gap: 16px" onSubmit="{{h.submitLbal}}">
+    @@ERRS:md.simple@@
+    <label class="f">新餘額（TWD）<input class="inp num" inputmode="decimal" value="{{md.simple.f.balance}}" onChange="{{md.simple.on.balance}}"></label>
+    <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">取消</button><button type="submit" class="btn pri">確認更新</button></div>
+  </form>
+@@/DLG@@
+
+<!-- ===== recurring item ===== -->
+@@DLG:rec:新增定期項目:@@
+  <form class="stack" style="gap: 16px" onSubmit="{{h.submitRec}}">
+    @@ERRS:md.simple@@
+    <div class="sect"><span class="lab">類型</span><div class="chips">@@PICKS:md.simple.recKinds:c@@</div></div>
+    <div class="form">
+      <label class="f">名稱<input class="inp" value="{{md.simple.f.desc}}" onChange="{{md.simple.on.desc}}"></label>
+      <label class="f">金額（TWD）<input class="inp num" inputmode="decimal" value="{{md.simple.f.amt}}" onChange="{{md.simple.on.amt}}"></label>
+      <label class="f">每月日期<input class="inp num" type="number" min="1" max="31" value="{{md.simple.f.day}}" onChange="{{md.simple.on.day}}"></label>
+    </div>
+    <div class="sect"><span class="lab">類別</span><div class="chips">@@PICKS:md.simple.recCats:c@@</div></div>
+    <div class="sect"><span class="lab">帳戶</span><div class="chips">@@PICKS:md.simple.recAccts:c@@</div></div>
+    <div class="dlg-f"><button type="button" class="btn ghost" onClick="{{h.close}}">取消</button><button type="submit" class="btn pri">儲存</button></div>
+  </form>
+@@/DLG@@
+
+<!-- ===== command palette ===== -->
+<sc-if value="{{md.is_cmd}}" hint-placeholder-val="{{ false }}">
+  <div class="scrim" onClick="{{h.scrim}}">
+    <div class="cmd" role="dialog" aria-modal="true" aria-label="指令面板">
+      <input class="inp" placeholder="> 輸入指令，例如 /expense" aria-label="指令" value="{{md.cmd.q}}" onChange="{{h.cmdQ}}" onKeyDown="{{h.cmdKey}}">
+      <div class="cmd-list" role="listbox" aria-label="指令清單">
+        <sc-for list="{{md.cmd.list}}" as="c" hint-placeholder-count="8"><button type="button" class="cmd-i {{c.cls}}" role="option" aria-selected="{{c.sel}}" onClick="{{c.run}}" onMouseEnter="{{c.hover}}"><code>{{c.code}}</code><span>{{c.label}}</span></button></sc-for>
+        <sc-if value="{{md.cmd.none}}" hint-placeholder-val="{{ false }}"><p class="small dim" style="padding: 12px">沒有符合的指令</p></sc-if>
+      </div>
+    </div>
+  </div>
+</sc-if>
