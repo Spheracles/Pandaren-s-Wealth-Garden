@@ -185,8 +185,8 @@ const indexHtml = (js, css) => `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#122650">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#D6E6F8">
+<meta name="color-scheme" content="light">
 <meta name="description" content="財富花園 NEON CITY：金錢、時間、心力三維紀錄的個人財富網頁版。示範模式使用虛構資料，資料只存在你的瀏覽器。">
 <meta name="application-name" content="財富花園">
 <meta name="mobile-web-app-capable" content="yes">
@@ -206,13 +206,13 @@ const indexHtml = (js, css) => `<!doctype html>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Noto+Sans+TC:wght@400;500;700&amp;family=Oxanium:wght@500;600;700&amp;display=swap">
 <link rel="stylesheet" href="./assets/${css}">
 <style>
-#boot{min-height:100vh;display:grid;place-items:center;background:#122650;color:#A9BEDD;font:14px/1.6 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.12em}
-#boot b{color:#5CCBFF;text-shadow:0 0 12px rgba(92,203,255,.6);font-weight:600}
+#boot{min-height:100vh;display:grid;place-items:center;background:linear-gradient(180deg,#E8F1FC,#C3DAF4);color:#405A84;font:14px/1.6 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.12em}
+#boot b{color:#1655B5;text-shadow:0 0 14px rgba(100,175,255,.6);font-weight:600}
 </style>
 </head>
 <body>
 <div id="root"><div id="boot"><div><b>WEALTH GARDEN</b> · 載入中…</div></div></div>
-<noscript><div style="padding:24px;color:#F3F8FF;background:#122650;font-family:sans-serif">財富花園需要啟用 JavaScript 才能使用。</div></noscript>
+<noscript><div style="padding:24px;color:#0E2347;background:#DCEAF9;font-family:sans-serif">財富花園需要啟用 JavaScript 才能使用。</div></noscript>
 <script src="./assets/${js}"></script>
 </body>
 </html>
