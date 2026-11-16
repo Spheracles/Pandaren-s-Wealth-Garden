@@ -1,0 +1,100 @@
+<div class="wg {{t.cls}}" style="--acc: {{t.acc}}; --acc-soft: {{t.accSoft}}; --acc-line: {{t.accLine}}; --acc-glow: {{t.accGlow}}; --acc-neon: {{t.accNeon}}; --acc-neon2: {{t.accNeon2}}">
+<div class="aura" aria-hidden="true"></div>
+<div class="sweep" aria-hidden="true"></div>
+<div class="shell">
+
+<aside class="rail" aria-label="主要導覽">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 108 108"><path d="M54 76 C 52 64, 56 56, 54 44" style="fill: none; stroke: #4FC3FF; stroke-width: 3.4; stroke-linecap: round"></path><path d="M54 66 q -10 -8 -16 -2 q 8 6 16 2z M54 57 q 10 -8 16 -2 q -8 6 -16 2z" style="fill: #4FC3FF; opacity: .85"></path><path d="M54 30a8 8 0 1 0 0.01 0Z" style="fill: #F472B6"></path><path d="M41 76h26l-3.5 8h-19z" style="fill: rgba(79,195,255,.14); stroke: #4FC3FF; stroke-width: 1.8"></path></svg>
+    </div>
+    <div><b>WEALTH GARDEN</b><span>NEON CITY · 財富花園</span></div>
+  </div>
+  <nav aria-label="頁面">
+    <sc-for list="{{nav}}" as="g" hint-placeholder-count="5">
+      <div class="navg">{{g.label}}</div>
+      <sc-for list="{{g.items}}" as="n" hint-placeholder-count="2">
+        <button type="button" class="navi {{n.cls}}" aria-current="{{n.cur}}" onClick="{{n.go}}">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="{{n.ic}}"></path></svg>
+          <span>{{n.label}}</span>
+          <sc-if value="{{n.badge}}" hint-placeholder-val="{{ false }}"><span class="badge">{{n.badge}}</span></sc-if>
+          <sc-if value="{{n.noBadge}}" hint-placeholder-val="{{ true }}"><span class="code">{{n.code}}</span></sc-if>
+        </button>
+      </sc-for>
+    </sc-for>
+  </nav>
+  <div class="rail-foot">
+    <button type="button" class="btn sm" onClick="{{h.cmd}}">@@IS:search@@指令面板</button>
+    <div class="flex between"><span>{{ui.version}} · 網頁版</span><span>{{ui.store}}</span></div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="top">
+    <span class="mbrand show-m">WEALTH GARDEN</span>
+    <span class="crumb hide-m"><b>{{ui.crumb}}</b><i class="caret" aria-hidden="true"></i></span>
+    <sc-if value="{{ui.demo}}" hint-placeholder-val="{{ true }}"><span class="led w" title="所有數字皆為虛構示範資料"><i></i>示範模式<span class="hide-m">・虛構資料</span></span></sc-if>
+    <sc-if value="{{ui.user}}" hint-placeholder-val="{{ false }}"><span class="led c"><i></i>個人模式</span></sc-if>
+    <span class="led hide-m" title="資料只存在這個瀏覽器，不是雲端資料庫"><i></i>儲存：{{ui.store}}</span>
+    <span class="led w hide-m"><i></i>AI 未連線</span>
+    <span class="sp"></span>
+    <button type="button" class="btn ghost sm hide-m" onClick="{{h.cmd}}">@@IS:search@@搜尋指令</button>
+    <button type="button" class="btn sm" aria-pressed="{{ui.privacy}}" onClick="{{h.privacy}}">
+      <sc-if value="{{ui.privacy}}" hint-placeholder-val="{{ false }}">@@IS:eyeoff@@</sc-if>
+      <sc-if value="{{ui.noPrivacy}}" hint-placeholder-val="{{ true }}">@@IS:eye@@</sc-if>
+      <span>{{ui.privLabel}}</span>
+    </button>
+    <sc-if value="{{ui.demo}}" hint-placeholder-val="{{ true }}"><button type="button" class="btn pri sm hide-m" onClick="{{h.useMine}}">使用我的資料</button></sc-if>
+    <button type="button" class="btn ghost sm hide-m {{ui.railCls}}" aria-pressed="{{ui.rail}}" aria-label="切換洞察面板" onClick="{{h.rail}}">@@IS:panel@@</button>
+  </header>
+  <sc-if value="{{ui.offline}}" hint-placeholder-val="{{ false }}">
+    <div class="offline" role="status">@@IS:wifi@@離線中：記帳、分析與花園照常運作，資料保存在這個瀏覽器；雲端與 AI 功能暫停。</div>
+  </sc-if>
+
+  <main class="content">
+  <sc-if value="{{hasPageErr}}" hint-placeholder-val="{{ false }}">
+    <div class="pn stack"><h1>這個畫面發生錯誤</h1><p class="mut">你的財務資料沒有被修改。可以切換到其他頁面，或回到總覽。</p><div class="num small neg">{{pageErr}}</div><div class="acts"><button type="button" class="btn pri" onClick="{{go.dashboard}}">回到總覽</button></div></div>
+  </sc-if>
+
+@@PAGES@@
+
+  </main>
+</div>
+
+<sc-if value="{{ui.rail}}" hint-placeholder-val="{{ false }}">
+<aside class="side" aria-label="AI 洞察面板">
+  <div class="flex between"><div><div class="eb">INSIGHTS</div><h2>洞察</h2></div><button type="button" class="btn ghost sm" aria-label="收合洞察面板" onClick="{{h.rail}}">@@IS:x@@</button></div>
+  <div class="note">@@IS:bolt@@<span>AI 未連線。以下由規則式統計產生，是建議而非已實現成果。</span></div>
+  <sc-for list="{{side.insights}}" as="i" hint-placeholder-count="3">
+    <button type="button" class="ins" onClick="{{i.go}}"><span class="flex between"><b>{{i.title}}</b><span class="chip {{i.tone}}">建議</span></span><span>{{i.body}}</span><span class="tiny dim">{{i.basis}}</span></button>
+  </sc-for>
+  <sc-if value="{{side.none}}" hint-placeholder-val="{{ false }}"><div class="tiny dim">資料不足，暫無洞察。</div></sc-if>
+  <div class="hr"></div>
+  <div class="eb">QUICK STATUS</div>
+  <dl class="kv"><dt>本月收入</dt><dd class="num">{{side.inc}}</dd><dt>本月支出</dt><dd class="num">{{side.exp}}</dd><dt>7 日心力</dt><dd class="num">{{side.e7}}</dd><dt>待核准草案</dt><dd class="num">{{side.pending}}</dd></dl>
+  <button type="button" class="btn" onClick="{{go.ai}}">@@IS:terminal@@開啟策略師</button>
+</aside>
+</sc-if>
+
+</div>
+
+<nav class="bnav" aria-label="手機導覽">
+  <sc-for list="{{tabs}}" as="b" hint-placeholder-count="4">
+    <button type="button" class="{{b.cls}}" aria-current="{{b.cur}}" onClick="{{b.go}}"><svg class="ico lg" viewBox="0 0 24 24" aria-hidden="true"><path d="{{b.ic}}"></path></svg>{{b.label}}</button>
+  </sc-for>
+  <button type="button" class="{{moreCls}}" onClick="{{h.more}}"><svg class="ico lg" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ic.more}}"></path></svg>更多<sc-if value="{{hasUnread}}" hint-placeholder-val="{{ false }}"><span class="badge">{{unread}}</span></sc-if></button>
+</nav>
+<button type="button" class="fab" aria-label="快速記帳" onClick="{{h.quick}}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ic.plus}}"></path></svg></button>
+
+@@DIALOGS@@
+
+<div class="toasts" aria-live="polite">
+  <sc-for list="{{toasts}}" as="tt" hint-placeholder-count="0">
+    <div class="{{tt.cls}}">
+      <sc-if value="{{tt.ach}}" hint-placeholder-val="{{ false }}"><span class="sparks" aria-hidden="true"><sc-for list="{{sparks}}" as="sk" hint-placeholder-count="10"><i></i></sc-for></span></sc-if>
+      <span>{{tt.msg}}</span>
+      <sc-if value="{{tt.hasAction}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn sm" onClick="{{tt.run}}">{{tt.label}}</button></sc-if>
+    </div>
+  </sc-for>
+</div>
+</div>
