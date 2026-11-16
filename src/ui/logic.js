@@ -5,7 +5,7 @@
    view values and user actions into engine calls.
    ===================================================================== */
 var E = WGE;
-var VERSION = '2.0.0';
+var VERSION = '2.1.0';
 var LS_KEY = 'wealth-garden-design-v2';
 /* Earlier versions on this site: the v1 PWA ('wealth-garden-state') and the v1 web prototype.
    They are only read, never written or deleted, so going back to an older version stays possible. */
@@ -317,7 +317,7 @@ class Component extends DCLogic {
     return this._D;
   }
   M(c, cur, sign) { return this.state.data.privacy ? '••••••' : E.fmt(c, cur || 'TWD', !!sign); }
-  accent() { var a = this.props.accent; return (typeof a === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(a)) ? a : '#4FC3FF'; }
+  accent() { var a = this.props.accent; return (typeof a === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(a)) ? a : '#5CCBFF'; }
 
   /* ---------- state helpers ---------- */
   upd(fn, audit) {
