@@ -29,7 +29,7 @@
       <div class="stack" style="gap: 10px">
         <label class="chk"><input type="checkbox" checked="{{md.tx.withAct}}" onChange="{{md.tx.on.withAct}}">同時記錄這項活動的時間與心力（三維紀錄）</label>
         <sc-if value="{{md.tx.withAct}}" hint-placeholder-val="{{ false }}">
-          <div class="stack" style="gap: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(148,170,210,.12)">
+          <div class="stack" style="gap: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(30,80,150,.14)">
             <label class="f" style="max-width: 240px">花費時間（分鐘）<input class="inp num" type="number" min="1" value="{{md.tx.minutes}}" onChange="{{md.tx.on.minutes}}"></label>
             <div class="sect"><span class="lab">活動類型</span><div class="chips">@@PICKS:md.tx.kinds:c@@</div></div>
             @@ENERGY:md.tx@@
