@@ -55,6 +55,7 @@ test('both cockpit styles are selectable and the ink layer only applies to .th-i
   const ink = css.slice(start).replace(/\/\*[\s\S]*?\*\//g, '').replace(/@keyframes[^{]+\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, '');
   const selectors = [...ink.matchAll(/(?:^|[}\n])\s*([^@{}][^{}]*)\{/g)].map((m) => m[1].trim()).filter((s) => s && !s.startsWith('@'));
   assert.ok(selectors.length > 200);
-  const loose = selectors.flatMap((s) => s.split(',')).map((s) => s.trim()).filter((s) => !/th-ink/.test(s));
+  const topSplit = (s) => { const out = []; let d = 0, cur = ''; for (const ch of s) { if (ch === '(') d++; if (ch === ')') d--; if (ch === ',' && !d) { out.push(cur); cur = ''; } else cur += ch; } out.push(cur); return out; };
+  const loose = selectors.flatMap(topSplit).map((s) => s.trim()).filter((s) => !/th-ink/.test(s));
   assert.deepEqual(loose, []);
 });

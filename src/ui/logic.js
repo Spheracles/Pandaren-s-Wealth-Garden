@@ -5,7 +5,7 @@
    view values and user actions into engine calls.
    ===================================================================== */
 var E = WGE;
-var VERSION = '2.6.0';
+var VERSION = '2.6.1';
 var LS_KEY = 'wealth-garden-design-v2';
 /* Earlier versions on this site: the v1 PWA ('wealth-garden-state') and the v1 web prototype.
    They are only read, never written or deleted, so going back to an older version stays possible. */
