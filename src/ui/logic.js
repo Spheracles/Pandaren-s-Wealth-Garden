@@ -205,7 +205,7 @@ function lineChart(id, labels, series, o) {
   out.grid = ticks.map(function (t) { return 'M0 ' + y(t).toFixed(1) + 'H' + W; }).join(' ');
   out.zero = (mn < 0 && mx > 0) ? 'M0 ' + y(0).toFixed(1) + 'H' + W : '';
   out.yt = ticks.map(function (t) { return { label: o.mask ? '•••' : yfmt(t), top: (y(t) / H * 100).toFixed(2) }; });
-  var every = Math.max(1, Math.ceil(n / 5)), xt = [];
+  var every = Math.max(1, Math.ceil(n / 4)), xt = [];
   labels.forEach(function (l, i) {
     var last = i === n - 1;
     if (i % every === 0 && !(i !== 0 && !last && n - 1 - i <= every * 0.85)) xt.push({ label: l, left: (x(i) / W * 100).toFixed(2), cls: i === 0 ? 'a0' : 'am' });
