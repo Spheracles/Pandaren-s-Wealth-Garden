@@ -1,20 +1,23 @@
-<div class="wg {{t.cls}}" style="--acc: {{t.acc}}; --acc-soft: {{t.accSoft}}; --acc-line: {{t.accLine}}; --acc-glow: {{t.accGlow}}; --acc-neon: {{t.accNeon}}; --acc-neon2: {{t.accNeon2}}">
+<div class="wg {{t.cls}}" style="--acc: {{t.acc}}; --acc-soft: {{t.accSoft}}; --acc-line: {{t.accLine}}; --acc-glow: {{t.accGlow}}; --acc-neon: {{t.accNeon}}; --acc-neon2: {{t.accNeon2}}; --sec: {{t.sec}}; --sec-soft: {{t.secSoft}}; --sec-line: {{t.secLine}}; --sec-glow: {{t.secGlow}}">
 <div class="aura" aria-hidden="true"></div>
+<div class="floor" aria-hidden="true"></div>
 <div class="sweep" aria-hidden="true"></div>
+<div class="canopy" aria-hidden="true"><i class="cn tl"></i><i class="cn tr"></i><i class="cn bl"></i><i class="cn br"></i><i class="arch"></i></div>
 <div class="shell">
 
 <aside class="rail" aria-label="主要導覽">
   <div class="brand">
     <div class="logo" aria-hidden="true">
-      <svg viewBox="0 0 108 108"><path d="M54 76 C 52 64, 56 56, 54 44" style="fill: none; stroke: #1F6FD6; stroke-width: 3.4; stroke-linecap: round"></path><path d="M54 66 q -10 -8 -16 -2 q 8 6 16 2z M54 57 q 10 -8 16 -2 q -8 6 -16 2z" style="fill: #1F6FD6; opacity: .85"></path><path d="M54 30a8 8 0 1 0 0.01 0Z" style="fill: #C8337F"></path><path d="M41 76h26l-3.5 8h-19z" style="fill: rgba(31,111,214,.12); stroke: #1F6FD6; stroke-width: 1.8"></path></svg>
+      <svg viewBox="0 0 108 108"><path d="M54 76 C 52 64, 56 56, 54 44" style="fill: none; stroke: #35E0FF; stroke-width: 3.4; stroke-linecap: round"></path><path d="M54 66 q -10 -8 -16 -2 q 8 6 16 2z M54 57 q 10 -8 16 -2 q -8 6 -16 2z" style="fill: #35E0FF; opacity: .85"></path><path d="M54 30a8 8 0 1 0 0.01 0Z" style="fill: #FF4FCF"></path><path d="M41 76h26l-3.5 8h-19z" style="fill: rgba(53,224,255,.14); stroke: #35E0FF; stroke-width: 1.8"></path></svg>
     </div>
-    <div><b>WEALTH GARDEN</b><span>NEON CITY · 財富花園</span></div>
+    <div><b>WEALTH GARDEN</b><span>STAR COCKPIT · 財富花園</span></div>
   </div>
   <nav aria-label="頁面">
     <sc-for list="{{nav}}" as="g" hint-placeholder-count="5">
       <div class="navg">{{g.label}}</div>
       <sc-for list="{{g.items}}" as="n" hint-placeholder-count="2">
-        <button type="button" class="navi {{n.cls}}" aria-current="{{n.cur}}" onClick="{{n.go}}">
+        <button type="button" class="navi {{n.cls}}" aria-current="{{n.cur}}" style="--c: {{n.c}}" onClick="{{n.go}}">
+          <i class="lamp" aria-hidden="true"></i>
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="{{n.ic}}"></path></svg>
           <span>{{n.label}}</span>
           <sc-if value="{{n.badge}}" hint-placeholder-val="{{ false }}"><span class="badge">{{n.badge}}</span></sc-if>
@@ -32,6 +35,7 @@
 <div class="main">
   <header class="top">
     <span class="mbrand show-m">WEALTH GARDEN</span>
+    <span class="chan hide-m" aria-hidden="true">{{ui.chan}}</span>
     <span class="crumb hide-m"><b>{{ui.crumb}}</b><i class="caret" aria-hidden="true"></i></span>
     <sc-if value="{{ui.demo}}" hint-placeholder-val="{{ true }}"><span class="led w" title="所有數字皆為虛構示範資料"><i></i>示範模式<span class="hide-m">・虛構資料</span></span></sc-if>
     <sc-if value="{{ui.user}}" hint-placeholder-val="{{ false }}"><span class="led c"><i></i>個人模式</span></sc-if>
@@ -80,7 +84,7 @@
 
 <nav class="bnav" aria-label="手機導覽">
   <sc-for list="{{tabs}}" as="b" hint-placeholder-count="4">
-    <button type="button" class="{{b.cls}}" aria-current="{{b.cur}}" onClick="{{b.go}}"><svg class="ico lg" viewBox="0 0 24 24" aria-hidden="true"><path d="{{b.ic}}"></path></svg>{{b.label}}</button>
+    <button type="button" class="{{b.cls}}" aria-current="{{b.cur}}" style="--c: {{b.c}}" onClick="{{b.go}}"><svg class="ico lg" viewBox="0 0 24 24" aria-hidden="true"><path d="{{b.ic}}"></path></svg>{{b.label}}</button>
   </sc-for>
   <button type="button" class="{{moreCls}}" onClick="{{h.more}}"><svg class="ico lg" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ic.more}}"></path></svg>更多<sc-if value="{{hasUnread}}" hint-placeholder-val="{{ false }}"><span class="badge">{{unread}}</span></sc-if></button>
 </nav>

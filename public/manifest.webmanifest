@@ -2,7 +2,7 @@
   "id": "./",
   "name": "財富花園 Wealth Garden",
   "short_name": "財富花園",
-  "description": "金錢、時間與心力三維紀錄的個人財富花園。冰藍絲緞亮色介面，離線也能使用；資料只存在你的裝置。",
+  "description": "金錢、時間與心力三維紀錄的個人財富花園。星際駕駛艙介面，離線也能使用；資料只存在你的裝置。",
   "lang": "zh-TW",
   "dir": "ltr",
   "start_url": "./",
@@ -12,8 +12,8 @@
     "standalone",
     "minimal-ui"
   ],
-  "background_color": "#DCEAF9",
-  "theme_color": "#D6E6F8",
+  "background_color": "#040A22",
+  "theme_color": "#060E30",
   "categories": [
     "finance",
     "productivity"

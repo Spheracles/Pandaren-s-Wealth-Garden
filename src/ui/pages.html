@@ -1,6 +1,7 @@
 <!-- ===================== DASHBOARD ===================== -->
 <sc-if value="{{pg.dashboard}}" hint-placeholder-val="{{ true }}">
 <section class="page" aria-label="財富總覽控制台">
+<div class="deck-boot" aria-hidden="true"></div>
   <div class="phd">
     <div><div class="eb">WEALTH GARDEN // FINANCIAL COMMAND CENTER</div><h1>財富總覽控制台</h1></div>
     <div class="acts hide-m">
@@ -50,7 +51,7 @@
         <div class="ph"><div><div class="eb">ASSET STRUCTURE</div><h2>資產結構</h2></div><span class="tiny dim">點選類別看明細</span></div>
         <div class="donut-wrap">
           <svg class="donut" viewBox="0 0 180 180" role="img" aria-label="資產結構環形圖">
-            <circle cx="90" cy="90" r="62" style="fill: none; stroke: rgba(30,80,150,.1); stroke-width: 18"></circle>
+            <circle cx="90" cy="90" r="62" style="fill: none; stroke: rgba(150,180,240,.12); stroke-width: 18"></circle>
             @@ARC:cash@@
             @@ARC:bank@@
             @@ARC:invest@@
@@ -66,7 +67,7 @@
           </div>
         </div>
         <sc-if value="{{dash.drillShow}}" hint-placeholder-val="{{ false }}">
-          <div class="stack" style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(30,80,150,.14); gap: 6px">
+          <div class="stack" style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(150,180,240,.16); gap: 6px">
             <span class="tiny dim">{{dash.drillTitle}}</span>
             <sc-for list="{{dash.drill}}" as="d" hint-placeholder-count="2"><div class="flex between small"><span>{{d.name}}</span><span class="num">{{d.val}}</span></div></sc-for>
             <sc-if value="{{dash.drillEmpty}}" hint-placeholder-val="{{ false }}"><span class="small dim">此類別沒有項目。</span></sc-if>
@@ -84,7 +85,7 @@
           <polygon class="rg" points="{{dash.radar.r2}}"></polygon>
           <polygon class="rg" points="{{dash.radar.r3}}"></polygon>
           <path class="rg" d="{{dash.radar.spokes}}"></path>
-          <polygon points="{{dash.radar.poly}}" style="fill: rgba(109,79,216,.16); stroke: #6D4FD8; stroke-width: 1.6; filter: drop-shadow(0 0 5px rgba(109,79,216,.5))"></polygon>
+          <polygon points="{{dash.radar.poly}}" style="fill: rgba(255,79,207,.16); stroke: #FF4FCF; stroke-width: 1.6; filter: drop-shadow(0 0 5px rgba(255,79,207,.6))"></polygon>
           <path d="{{dash.radar.dots}}" style="fill: {{t.acc}}"></path>
           @@RLABEL:0@@
           @@RLABEL:1@@
@@ -141,6 +142,7 @@
 <!-- ===================== LEDGER ===================== -->
 <sc-if value="{{pg.ledger}}" hint-placeholder-val="{{ false }}">
 <section class="page" aria-label="收入與支出">
+<div class="deck-boot" aria-hidden="true"></div>
   <div class="phd">
     <div><div class="eb">LEDGER</div><h1>收入與支出</h1></div>
     <div class="acts"><button type="button" class="btn" onClick="{{h.addIncome}}">@@I:up@@新增收入</button><button type="button" class="btn" onClick="{{h.addTransfer}}">@@I:swap@@轉帳／繳卡費</button><button type="button" class="btn pri" onClick="{{h.addExpense}}">@@I:plus@@新增支出</button></div>
@@ -233,6 +235,7 @@
 <!-- ===================== RESOURCES ===================== -->
 <sc-if value="{{pg.resources}}" hint-placeholder-val="{{ false }}">
 <section class="page" aria-label="三維資源">
+<div class="deck-boot" aria-hidden="true"></div>
   <div class="phd">
     <div><div class="eb">RESOURCE MATRIX</div><h1>三維資源：金錢・時間・心力</h1></div>
     <div class="acts">@@SEG:res.win:o:期間@@<button type="button" class="btn pri" onClick="{{h.addActivity}}">@@I:plus@@記錄活動</button></div>
@@ -286,6 +289,7 @@
 <!-- ===================== ASSETS ===================== -->
 <sc-if value="{{pg.assets}}" hint-placeholder-val="{{ false }}">
 <section class="page" aria-label="資產與負債">
+<div class="deck-boot" aria-hidden="true"></div>
   <div class="phd">
     <div><div class="eb">ASSETS &amp; LIABILITIES</div><h1>資產與負債</h1></div>
     <div class="acts"><button type="button" class="btn pri" onClick="{{h.newAccount}}">@@I:plus@@新增帳戶</button><button type="button" class="btn" onClick="{{h.newAsset}}">新增資產</button><button type="button" class="btn" onClick="{{h.newLiab}}">新增負債</button></div>
@@ -351,6 +355,7 @@
 <!-- ===================== GARDEN ===================== -->
 <sc-if value="{{pg.garden}}" hint-placeholder-val="{{ false }}">
 <section class="page" aria-label="財富花園">
+<div class="deck-boot" aria-hidden="true"></div>
   <div class="phd">
     <div><div class="eb">WEALTH GARDEN</div><h1>財富花園</h1></div>
     <div class="acts"><button type="button" class="btn pri" onClick="{{h.newProject}}">@@I:leaf@@種下新計畫</button></div>
@@ -410,6 +415,7 @@
 <!-- ===================== PROJECTS ===================== -->
 <sc-if value="{{pg.projects}}" hint-placeholder-val="{{ false }}">
 <section class="page" aria-label="資產培育計畫">
+<div class="deck-boot" aria-hidden="true"></div>
   <sc-if value="{{prj.isList}}" hint-placeholder-val="{{ true }}">
     <div class="phd">
       <div><div class="eb">CULTIVATION PROJECTS</div><h1>資產培育計畫</h1></div>
@@ -485,6 +491,7 @@
 <!-- ===================== AI STRATEGIST ===================== -->
 <sc-if value="{{pg.ai}}" hint-placeholder-val="{{ false }}">
 <section class="page" aria-label="AI 財富策略師">
+<div class="deck-boot" aria-hidden="true"></div>
   <div class="phd">
     <div><div class="eb">WEALTH STRATEGIST // AI INTELLIGENCE CORE</div><h1>AI 財富策略師</h1></div>
     <div class="acts"><span class="led w"><i></i>AI 未連線</span><span class="led c"><i></i>規則式引擎可用</span></div>
@@ -521,7 +528,7 @@
     <div class="stack">
       <sc-for list="{{ai.pending}}" as="s" hint-placeholder-count="1">
         <article class="sugg">
-          <div class="flex between" style="align-items: flex-start"><div class="stack2"><span class="eb" style="color: #5638BD">{{s.source}}</span><h2>{{s.title}}</h2></div><span class="chip v">草案・待核准</span></div>
+          <div class="flex between" style="align-items: flex-start"><div class="stack2"><span class="eb" style="color: #B58CFF">{{s.source}}</span><h2>{{s.title}}</h2></div><span class="chip v">草案・待核准</span></div>
           @@KV:s.rows:kv@@
           <div class="stack2"><span class="small dim">執行步驟</span><ol><sc-for list="{{s.steps}}" as="sp" hint-placeholder-count="3"><li>{{sp.t}}</li></sc-for></ol></div>
           <div class="dlg-f"><button type="button" class="btn danger" onClick="{{s.reject}}">駁回</button><button type="button" class="btn pri" onClick="{{s.approve}}">@@IS:check@@核准並建立計畫</button></div>
@@ -539,6 +546,7 @@
 <!-- ===================== REPORTS ===================== -->
 <sc-if value="{{pg.reports}}" hint-placeholder-val="{{ false }}">
 <section class="page" aria-label="分析報告">
+<div class="deck-boot" aria-hidden="true"></div>
   <div class="phd">
     <div><div class="eb">ANALYTICS</div><h1>分析報告</h1></div>
     <div class="acts">
@@ -582,6 +590,7 @@
 <!-- ===================== NOTIFICATIONS ===================== -->
 <sc-if value="{{pg.notifications}}" hint-placeholder-val="{{ false }}">
 <section class="page" aria-label="通知中心">
+<div class="deck-boot" aria-hidden="true"></div>
   <div class="phd">
     <div><div class="eb">ALERTS</div><h1>通知中心</h1></div>
     <div class="acts"><button type="button" class="btn" onClick="{{h.markAllRead}}">@@I:check@@全部標為已讀</button></div>
@@ -589,7 +598,7 @@
   <section class="pn">
     <div class="rows">
       <sc-for list="{{ntf.list}}" as="n" hint-placeholder-count="6">
-        <button type="button" class="row click" style="opacity: {{n.op}}" onClick="{{n.go}}"><span class="chip {{n.tone}}">{{n.type}}</span><span class="grow small">{{n.text}}</span><sc-if value="{{n.unread}}" hint-placeholder-val="{{ true }}"><i class="swatch" style="background: #C8337F; border-radius: 50%"></i></sc-if></button>
+        <button type="button" class="row click" style="opacity: {{n.op}}" onClick="{{n.go}}"><span class="chip {{n.tone}}">{{n.type}}</span><span class="grow small">{{n.text}}</span><sc-if value="{{n.unread}}" hint-placeholder-val="{{ true }}"><i class="swatch" style="background: #FF4FCF; border-radius: 50%"></i></sc-if></button>
       </sc-for>
     </div>
     <sc-if value="{{ntf.none}}" hint-placeholder-val="{{ false }}"><div class="empty">目前沒有通知。</div></sc-if>
@@ -601,6 +610,7 @@
 <!-- ===================== SETTINGS ===================== -->
 <sc-if value="{{pg.settings}}" hint-placeholder-val="{{ false }}">
 <section class="page" aria-label="系統設定">
+<div class="deck-boot" aria-hidden="true"></div>
   <div class="phd"><div><div class="eb">SETTINGS</div><h1>系統設定</h1></div><div class="acts"><button type="button" class="btn" onClick="{{h.wizard}}">開啟設定精靈</button><button type="button" class="btn ghost" onClick="{{h.help}}">@@I:help@@說明</button></div></div>
   <section class="pn hud">
     <div class="ph"><div><div class="eb">LOCAL &amp; CLOUD</div><h2>資料位置與帳號</h2></div><span class="chip w">網頁版</span></div>
