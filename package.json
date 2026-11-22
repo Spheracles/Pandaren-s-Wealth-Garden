@@ -1,7 +1,7 @@
 {
   "name": "wealth-garden",
   "displayName": "財富花園 Wealth Garden",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "private": true,
   "type": "module",
   "description": "WEALTH GARDEN — NEON CITY 個人財富管理網頁版／PWA（金錢・時間・心力三維紀錄）",
