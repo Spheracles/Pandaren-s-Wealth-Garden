@@ -5,7 +5,7 @@
    view values and user actions into engine calls.
    ===================================================================== */
 var E = WGE;
-var VERSION = '2.3.0';
+var VERSION = '2.4.0';
 var LS_KEY = 'wealth-garden-design-v2';
 /* Earlier versions on this site: the v1 PWA ('wealth-garden-state') and the v1 web prototype.
    They are only read, never written or deleted, so going back to an older version stays possible. */
@@ -48,6 +48,10 @@ var IC = {
   prev: 'M15 18l-6-6 6-6',
   next: 'M9 6l6 6-6 6',
   wifi: 'M2 2l20 20 M8.5 16.5a5 5 0 017 0 M5 12.9a10 10 0 015.2-2.7 M19 12.9a10 10 0 00-2.4-1.6 M12 20h.01',
+  sound: 'M4 9.5h3.5L12 5.5v13l-4.5-4H4z M15.5 9a4.2 4.2 0 010 6 M18 6.5a7.8 7.8 0 010 11',
+  mute: 'M4 9.5h3.5L12 5.5v13l-4.5-4H4z M16 9.5l5 5 M21 9.5l-5 5',
+  cloud: 'M7 18.5h10.5a4 4 0 00.6-7.95A5.5 5.5 0 007.2 9.6 4.5 4.5 0 007 18.5z',
+  signal: 'M5 19v-2 M9.5 19v-5 M14 19v-8 M18.5 19V8',
   help: 'M12 21a9 9 0 100-18 9 9 0 000 18z M9.5 9.2a2.6 2.6 0 015 .9c0 1.7-2.5 2.3-2.5 4 M12 17.2h.01'
 };
 
@@ -72,6 +76,85 @@ var GROUP_COL = { cash: '#35E0FF', bank: '#B58CFF', invest: '#FF4FCF', realestat
 /* cockpit system colour per section: nav lamps, HUD frame, top bar and panel edges follow it */
 var SEC = { dashboard: '#35E0FF', ledger: '#FF9B3D', resources: '#B58CFF', assets: '#FFC93C', garden: '#4BE39A', projects: '#2EF2D0', ai: '#FF4FCF', reports: '#7FB2FF', notifications: '#FF8FB8', settings: '#FFD25A' };
 
+/* ---------- cockpit sound: mechanical servo, latch and switch sounds, synthesized with Web Audio ----------
+   Nothing is downloaded. The audio context starts on the first click (browsers require a user gesture).
+   The on/off choice is a per-browser preference ('wg-sfx'), not financial data. */
+var SFX = (function () {
+  var ctx = null, master = null, on = true;
+  try { on = window.localStorage.getItem('wg-sfx') !== '0'; } catch (e) { /* default on */ }
+  function ac() {
+    if (!on) return null;
+    try {
+      if (!ctx) {
+        var C = window.AudioContext || window.webkitAudioContext;
+        if (!C) return null;
+        ctx = new C(); master = ctx.createGain(); master.gain.value = 0.3; master.connect(ctx.destination);
+      }
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    } catch (e) { return null; }
+  }
+  function noise(c, dur) {
+    var n = Math.max(1, Math.floor(c.sampleRate * dur)), b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0);
+    for (var i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    var s = c.createBufferSource(); s.buffer = b; return s;
+  }
+  function env(g, t, a, peak, dec) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec); }
+  function click(c, t, freq, vol, dur) {
+    var s = noise(c, dur + 0.02), f = c.createBiquadFilter(), g = c.createGain();
+    f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = 5; s.connect(f); f.connect(g); g.connect(master);
+    env(g, t, 0.001, vol, dur); s.start(t); s.stop(t + dur + 0.03);
+  }
+  function thunk(c, t, freq, vol) {
+    var o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(freq, t); o.frequency.exponentialRampToValueAtTime(freq * 0.45, t + 0.12);
+    o.connect(g); g.connect(master); env(g, t, 0.004, vol, 0.14); o.start(t); o.stop(t + 0.22);
+  }
+  function servo(c, t, f0, f1, dur, vol) {
+    var o = c.createOscillator(), o2 = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain();
+    o.type = 'sawtooth'; o2.type = 'square';
+    o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    o2.frequency.setValueAtTime(f0 * 0.5, t); o2.frequency.exponentialRampToValueAtTime(f1 * 0.5, t + dur);
+    f.type = 'lowpass'; f.frequency.value = 1300; f.Q.value = 2;
+    o.connect(f); o2.connect(f); f.connect(g); g.connect(master);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.03);
+    g.gain.setValueAtTime(vol, t + Math.max(0.04, dur - 0.05)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.start(t); o2.start(t); o.stop(t + dur + 0.03); o2.stop(t + dur + 0.03);
+  }
+  function hiss(c, t, dur, vol) {
+    var s = noise(c, dur), f = c.createBiquadFilter(), g = c.createGain();
+    f.type = 'highpass'; f.frequency.value = 2600; s.connect(f); f.connect(g); g.connect(master);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); s.start(t); s.stop(t + dur);
+  }
+  function chirp(c, t, f0, f1, dur, vol) {
+    var o = c.createOscillator(), g = c.createGain();
+    o.type = 'triangle'; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    o.connect(g); g.connect(master); env(g, t, 0.005, vol, dur); o.start(t); o.stop(t + dur + 0.05);
+  }
+  function play(fn) { var c = ac(); if (!c) return; try { fn(c, c.currentTime + 0.01); } catch (e) { /* audio is optional */ } }
+  return {
+    isOn: function () { return on; },
+    toggle: function () { on = !on; try { window.localStorage.setItem('wg-sfx', on ? '1' : '0'); } catch (e) { /* ignore */ } if (on) this.flip(); return on; },
+    /* heavy toggle switch: two-stage metal click */
+    flip: function () { play(function (c, t) { click(c, t, 2600, 0.55, 0.012); click(c, t + 0.035, 1400, 0.4, 0.022); thunk(c, t + 0.03, 170, 0.22); }); },
+    /* panels fold away: servo winding down, then a soft lock */
+    retract: function () { play(function (c, t) { servo(c, t, 540, 170, 0.2, 0.075); thunk(c, t + 0.18, 115, 0.28); }); },
+    /* panels slide in: air release, servo up, latch */
+    deploy: function () { play(function (c, t) { hiss(c, t, 0.16, 0.045); servo(c, t + 0.02, 160, 580, 0.28, 0.07); click(c, t + 0.3, 1900, 0.45, 0.02); thunk(c, t + 0.31, 140, 0.3); }); },
+    /* dialog hatch opens */
+    hatch: function () { play(function (c, t) { hiss(c, t, 0.22, 0.06); servo(c, t, 220, 640, 0.22, 0.06); chirp(c, t + 0.2, 880, 1320, 0.09, 0.07); }); },
+    /* dialog hatch closes */
+    seal: function () { play(function (c, t) { servo(c, t, 520, 200, 0.14, 0.06); click(c, t + 0.13, 1600, 0.35, 0.018); thunk(c, t + 0.14, 120, 0.22); }); },
+    /* small key press */
+    tick: function () { play(function (c, t) { click(c, t, 3200, 0.3, 0.01); }); },
+    /* status beep for messages */
+    blip: function () { play(function (c, t) { chirp(c, t, 1320, 1760, 0.07, 0.06); }); }
+  };
+})();
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+var WEEK = ['週日 SUN', '週一 MON', '週二 TUE', '週三 WED', '週四 THU', '週五 FRI', '週六 SAT'];
+/* greenhouse planting slots: x / bottom offset in % of the bed, scale; front row last so it draws on top */
+var GH_SLOTS = [[50, 24, 0.86], [27, 28, 0.74], [73, 28, 0.74], [12, 34, 0.6], [88, 34, 0.6], [38, 12, 1], [62, 12, 1]];
 var reducedMotion = (function () { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
 var lowPower = ((typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 8) <= 4;
 
@@ -122,10 +205,10 @@ function lineChart(id, labels, series, o) {
   out.grid = ticks.map(function (t) { return 'M0 ' + y(t).toFixed(1) + 'H' + W; }).join(' ');
   out.zero = (mn < 0 && mx > 0) ? 'M0 ' + y(0).toFixed(1) + 'H' + W : '';
   out.yt = ticks.map(function (t) { return { label: o.mask ? '•••' : yfmt(t), top: (y(t) / H * 100).toFixed(2) }; });
-  var every = Math.max(1, Math.ceil(n / 7)), xt = [];
+  var every = Math.max(1, Math.ceil(n / 5)), xt = [];
   labels.forEach(function (l, i) {
     var last = i === n - 1;
-    if (i % every === 0 && !(i !== 0 && !last && n - 1 - i <= every / 2)) xt.push({ label: l, left: (x(i) / W * 100).toFixed(2), cls: i === 0 ? 'a0' : 'am' });
+    if (i % every === 0 && !(i !== 0 && !last && n - 1 - i <= every * 0.85)) xt.push({ label: l, left: (x(i) / W * 100).toFixed(2), cls: i === 0 ? 'a0' : 'am' });
     else if (last) xt.push({ label: l, left: (x(i) / W * 100).toFixed(2), cls: 'a1' });
   });
   if (xt.length && xt[0].cls !== 'a0') xt[0].cls = 'a0';
@@ -230,7 +313,8 @@ class Component extends DCLogic {
       repMonth: E.addMonths(E.monthKey(T), -1), repGen: false,
       hourlyDraft: null, budDraft: null, budNew: '', catKind: 'expense', catName: '', impPaste: '', impErr: '', impDef: '',
       msName: '', taskName: '',
-      cmdQ: '', cmdIx: 0, online: true, tw: null, rail: false, grew: null, noStore: false
+      cmdQ: '', cmdIx: 0, online: true, tw: null, rail: true, grew: null, noStore: false,
+      now: new Date(), pgOut: false, sfx: SFX.isOn(), desk: (function () { try { return window.localStorage.getItem('wg-desk') !== '0'; } catch (e) { return true; } })()
     };
     this._fh = {}; this._sh = {}; this._mh = {}; this._vm = {}; this._D = null; this._DK = null;
     this._timers = []; this._saveT = null; this._achPrev = null; this._pulse = null; this._raf = null;
@@ -258,6 +342,7 @@ class Component extends DCLogic {
     var D = this.getD();
     this._achPrev = D.ach.filter(function (a) { return a.done; }).map(function (a) { return a.id; });
     this._pulse = this.pulseVals(D);
+    this._clock = setInterval(() => this.setState({ now: new Date() }), 20000);
   }
   componentWillUnmount() {
     try {
@@ -266,6 +351,8 @@ class Component extends DCLogic {
       document.removeEventListener('visibilitychange', this._onVis);
     } catch (e) { /* ignore */ }
     this._timers.forEach(function (t) { clearTimeout(t); });
+    if (this._clock) clearInterval(this._clock);
+    if (this._navT) clearTimeout(this._navT);
     if (this._raf) cancelAnimationFrame(this._raf);
     this.flush();
   }
@@ -335,19 +422,30 @@ class Component extends DCLogic {
   }
   toast(msg, action, ach) {
     var id = E.uid();
+    SFX.blip();
     this.setState(function (st) { return { toasts: st.toasts.concat([{ id: id, msg: msg, action: action || null, ach: !!ach }]) }; });
     this._timers.push(setTimeout(() => this.setState(function (st) { return { toasts: st.toasts.filter(function (t) { return t.id !== id; }) }; }), action ? 7000 : 3800));
   }
   nav(p, focus) {
-    this.setState(function (st) {
-      return { page: p, modal: null, hov: null, projSel: p === 'projects' ? (focus || null) : st.projSel, plantSel: p === 'garden' ? (focus || st.plantSel) : st.plantSel };
-    });
-    try { window.scrollTo(0, 0); } catch (e) { /* ignore */ }
+    var go = () => {
+      this._navT = null;
+      this.setState(function (st) {
+        return { page: p, pgOut: false, modal: null, hov: null, projSel: p === 'projects' ? (focus || null) : st.projSel, plantSel: p === 'garden' ? (focus || st.plantSel) : st.plantSel };
+      });
+      try { window.scrollTo(0, 0); } catch (e) { /* ignore */ }
+    };
+    var same = p === this.state.page && !this._navT;
+    if (!same) SFX.flip();
+    if (same || reducedMotion || !this.motionOn()) { go(); if (!same) SFX.deploy(); return; }
+    /* panels and instruments fold away first (about 0.2 s), then the next console deploys */
+    if (this._navT) clearTimeout(this._navT);
+    else { SFX.retract(); this.setState({ pgOut: true, modal: null }); }
+    this._navT = setTimeout(() => { go(); SFX.deploy(); }, 220);
   }
-  setModal0(m) { this.setState({ modal: Object.assign({ errs: [] }, m) }); }
+  setModal0(m) { if (!this.state.modal) SFX.hatch(); this.setState({ modal: Object.assign({ errs: [] }, m) }); }
   setModal(patch) { this.setState(function (st) { return st.modal ? { modal: Object.assign({}, st.modal, patch) } : null; }); }
   setForm(patch) { this.setState(function (st) { return st.modal ? { modal: Object.assign({}, st.modal, { form: Object.assign({}, st.modal.form, patch) }) } : null; }); }
-  closeModal() { this.setState({ modal: null }); }
+  closeModal() { if (this.state.modal) SFX.seal(); this.setState({ modal: null }); }
   /** Cached change handler for a form field of the open dialog. */
   fld(k) {
     if (!this._fh[k]) this._fh[k] = (e) => { var t = e && e.target; this.setForm({ [k]: t ? (t.type === 'checkbox' ? t.checked : t.value) : e }); };
@@ -360,7 +458,7 @@ class Component extends DCLogic {
     return this._sh[key];
   }
   confirm(title, body, ok, danger) { this.setModal0({ kind: 'confirm', title: title, body: body, ok: ok, danger: !!danger }); }
-  seg(opts, cur, set) { return opts.map(function (o) { return { label: o[1], cls: o[0] === cur ? 'on' : '', pressed: o[0] === cur ? 'true' : 'false', pick: function () { set(o[0]); } }; }); }
+  seg(opts, cur, set) { return opts.map(function (o) { return { label: o[1], cls: o[0] === cur ? 'on' : '', pressed: o[0] === cur ? 'true' : 'false', pick: function () { if (o[0] !== cur) SFX.tick(); set(o[0]); } }; }); }
   chart(id, labels, series, o) {
     o = o || {};
     var hv = this.state.hov;
@@ -625,6 +723,9 @@ class Component extends DCLogic {
   handlers() {
     var s = this;
     return {
+      sfx: function () { s.setState({ sfx: SFX.toggle() }); },
+      /* fold the instrument desk away (or bring it back); a per-browser layout preference */
+      desk: function () { var open = !s.state.desk; if (open) SFX.deploy(); else SFX.retract(); try { window.localStorage.setItem('wg-desk', open ? '1' : '0'); } catch (e) { /* ignore */ } s.setState({ desk: open }); },
       addExpense: function () { s.openTx({ type: 'expense' }); },
       addIncome: function () { s.openTx({ type: 'income' }); },
       addTransfer: function () { s.openTx({ type: 'transfer' }); },
@@ -885,7 +986,84 @@ class Component extends DCLogic {
       plants: D.plants.slice(0, 6).map((p) => this.plantItem(p, null)), plantsEmpty: !D.plants.length,
       insights: D.insights.map((i) => Object.assign({}, i, { go: () => this.nav(i.page) })), insightsEmpty: !D.insights.length,
       recent: D.txs.slice(0, 6).map((t) => this.txRow(t)),
-      ach: D.ach.map(function (a) { return { name: a.name, desc: a.desc, done: a.done, cls: a.done ? 'done' : '', tag: a.done ? '已達成' : '未達成', tagCls: a.done ? 'p' : '' }; })
+      ach: D.ach.map(function (a) { return { name: a.name, desc: a.desc, done: a.done, cls: a.done ? 'done' : '', tag: a.done ? '已達成' : '未達成', tagCls: a.done ? 'p' : '' }; }),
+      kpis: this.kpiVM(D, tv, delta),
+      rings: this.ringVM(D),
+      plans: this.planVM(S, D),
+      plansEmpty: !S.projects.length,
+      notes: this.noteVM(S, D),
+      notesEmpty: !D.notes.length
+    };
+  }
+  /* four headline figures, each compared with last month's full-month figure (never a projection) */
+  kpiVM(D, tv, delta) {
+    var S = this.state.data, mm = D.months, prev = mm.length > 1 ? mm[mm.length - 2] : null, m6 = mm.slice(-6);
+    var pv = (v, sign) => prev ? '上月 ' + this.M(v, 'TWD', sign) : '—';
+    return [
+      { code: 'CASH FLOW', label: '現金流', ic: IC.swap, tint: 't-cyan', val: this.M(tv('cf', D.month.net), 'TWD', true), cls: D.month.net >= 0 ? 'pos' : 'neg', sub: pv(prev && prev.net, true), spark: spark(m6.map(function (m) { return m.net; })), sc: '#35E0FF' },
+      { code: 'INCOME', label: '收入', ic: IC.up, tint: 't-grn', val: this.M(tv('inc', D.month.inc)), cls: 'pos', sub: pv(prev && prev.inc), spark: spark(m6.map(function (m) { return m.inc; })), sc: '#4BE39A' },
+      { code: 'EXPENSES', label: '支出', ic: IC.down, tint: 't-mag', val: this.M(tv('exp', D.month.exp)), cls: '', sub: pv(prev && prev.exp), spark: spark(m6.map(function (m) { return m.exp; })), sc: '#FF6FD8' },
+      { code: 'NET WORTH', label: '淨資產', ic: IC.vault, tint: 't-gold', val: this.M(tv('net', D.now.net)), cls: '', sub: '12 個月 ' + (S.privacy ? '•••' : E.fmt(delta, 'TWD', true)), spark: spark(mm.map(function (m) { return m.netWorth; })), sc: '#FFC93C' }
+    ];
+  }
+  /* three status rings, each with its definition; no target is invented */
+  ringVM(D) {
+    var R = 34, C = 2 * Math.PI * R;
+    var mk = (label, code, pct, txt, sub, color) => ({ label: label, code: code, val: pct == null ? '—' : txt, sub: sub, color: color, da: ((pct == null ? 0 : Math.max(0, Math.min(100, pct))) / 100 * C).toFixed(1) + ' ' + C.toFixed(1) });
+    var inc = D.month.inc, sav = inc > 0 ? D.month.net / inc * 100 : null;
+    var e = D.a7.avg, ep = e == null ? null : (e + 5) / 10 * 100;
+    var tp = D.a7.min > 0 ? D.a7.projMin / D.a7.min * 100 : null;
+    return [
+      mk('儲蓄率', 'SAVINGS', sav, Math.round(sav) + '%', '本月現金流 ÷ 本月收入', '#35E0FF'),
+      mk('心力', 'ENERGY', ep, (e > 0 ? '+' : '') + (e == null ? '' : e.toFixed(1)), '7 日平均（−5～+5）', '#FFC93C'),
+      mk('培育時間', 'GROWTH', tp, Math.round(tp) + '%', '7 日投入計畫的時間占比', '#FF6FD8')
+    ];
+  }
+  planVM(S, D) {
+    return S.projects.filter(function (p) { return p.status !== '終止'; }).slice(0, 4).map((p) => {
+      var ms = p.milestones || [], ver = ms.filter(function (x) { return x.verified; }).length, pct = ms.length ? Math.round(ver / ms.length * 100) : 0;
+      return { name: p.name, pct: pct + '%', w: pct, sub: ver + '/' + ms.length + ' 里程碑已驗證', go: () => this.nav('projects', p.id) };
+    });
+  }
+  noteVM(S, D) {
+    var read = new Set(S.notifRead);
+    return D.notes.slice(0, 3).map((n) => ({ type: n.type, tone: n.tone, text: S.privacy && n.sensitive ? maskMoney(n.text) : n.text, unread: !read.has(n.id), go: () => { if (!read.has(n.id)) this.upd(function (d) { d.notifRead.push(n.id); }); this.nav(n.page || 'notifications'); } }));
+  }
+  /* greenhouse dome: the same plants as the garden, grown only from verified milestones and real income */
+  vmGreen() {
+    var S = this.state.data, D = this.getD(), nw = D.months.map(function (m) { return m.netWorth; }), delta = nw[nw.length - 1] - nw[0];
+    var plants = D.plants.slice(0, GH_SLOTS.length).map((p, i) => {
+      var sl = GH_SLOTS[i];
+      return Object.assign(this.plantItem(p, null), { x: sl[0], y: sl[1], s: sl[2], z: 100 - sl[1], aria: p.name + '，' + E.STAGES[p.stage] });
+    });
+    var mature = D.plants.filter(function (p) { return p.stage === 'stable' || p.stage === 'bloom'; }).length;
+    var ver = S.projects.reduce(function (s, p) { return s + (p.milestones || []).filter(function (m) { return m.verified; }).length; }, 0);
+    return {
+      plants: plants, none: !plants.length, seed: plantVM('seed'),
+      count: D.plants.length + ' 株', mature: mature, verified: ver,
+      delta: S.privacy ? '•••' : E.fmt(delta, 'TWD', true), deltaCls: delta >= 0 ? 'pos' : 'neg',
+      spark: spark(nw), up: delta >= 0
+    };
+  }
+  /* console instruments read real figures; decorative parts carry no numbers */
+  vmConsole() {
+    var S = this.state.data, D = this.getD(), L = 150.8;
+    var g = function (label, code, pct, val, sub, color) {
+      var p = pct == null ? 0 : Math.max(0, Math.min(100, pct));
+      return { label: label, code: code, val: pct == null ? '—' : val, sub: sub, color: color, deg: (-120 + p * 2.4).toFixed(1), da: (p / 100 * L).toFixed(1) + ' ' + L };
+    };
+    var inc = D.month.inc, sav = inc > 0 ? D.month.net / inc * 100 : null;
+    var bud = S.budgets || {}, cats = Object.keys(bud), lim = cats.reduce(function (s, k) { return s + bud[k]; }, 0);
+    var used = cats.reduce(function (s, k) { return s + (D.month.ec[k] || 0); }, 0), bp = lim > 0 ? used / lim * 100 : null;
+    var e = D.a7.avg;
+    return {
+      gauges: [
+        g('儲蓄率', 'SAVE', sav, Math.round(sav) + '%', '本月', '#35E0FF'),
+        g('預算使用', 'BUDGET', bp == null ? null : bp / 1.2, Math.round(bp) + '%', lim > 0 ? '本月預算類別' : '未設定預算', bp != null && bp >= 100 ? '#FF7A8A' : '#FFC93C'),
+        g('心力', 'ENERGY', e == null ? null : (e + 5) * 10, (e > 0 ? '+' : '') + (e == null ? '' : e.toFixed(1)), '7 日平均', '#FF6FD8')
+      ],
+      flow: spark(D.months.slice(-6).map(function (m) { return m.net; })),
+      flowVal: this.M(D.month.net, 'TWD', true), flowCls: D.month.net >= 0 ? 'pos' : 'neg'
     };
   }
   vmLedger() {
@@ -1383,16 +1561,18 @@ class Component extends DCLogic {
     /* neon strength tweak: [text glow, outer halo, panel glow] alpha */
     var gl = this.props.glow === '柔和' ? [0.32, 0.12, 0.22] : this.props.glow === '強烈' ? [0.8, 0.36, 0.5] : [0.55, 0.22, 0.36];
     return {
-      t: { acc: acc, accSoft: hexA(acc, 0.13), accLine: hexA(acc, 0.48), accGlow: hexA(acc, gl[2]), accNeon: hexA(acc, gl[0]), accNeon2: hexA(acc, gl[1]), cls: [dens, this.props.scanlines ? 'scan' : '', this.motionOn() ? '' : 'nomo', 'pg-' + page].join(' '), sec: sec, secSoft: hexA(sec, 0.14), secLine: hexA(sec, 0.5), secGlow: hexA(sec, gl[2] + 0.06) },
+      t: { acc: acc, accSoft: hexA(acc, 0.13), accLine: hexA(acc, 0.48), accGlow: hexA(acc, gl[2]), accNeon: hexA(acc, gl[0]), accNeon2: hexA(acc, gl[1]), cls: [dens, this.props.scanlines ? 'scan' : '', this.motionOn() ? '' : 'nomo', 'pg-' + page, st.rail ? 'rail-on' : ''].join(' '), sec: sec, secSoft: hexA(sec, 0.14), secLine: hexA(sec, 0.5), secGlow: hexA(sec, gl[2] + 0.06) },
       ic: IC, h: this.h, go: this.go, pg: pg, pageErr: pageErr, hasPageErr: !!pageErr,
       nav: nav, tabs: tabs, moreCls: moreOn ? 'on' : '', unread: unread, hasUnread: unread > 0,
       ui: {
         crumb: 'COCKPIT://' + navCode, chan: 'CH ' + String(navIx + 1).padStart(2, '0'), demo: S.mode === 'demo', user: S.mode !== 'demo', privacy: !!S.privacy, noPrivacy: !S.privacy, privLabel: S.privacy ? '已遮罩' : '隱私遮罩',
-        store: st.noStore ? '僅記憶體' : '本機瀏覽器', offline: !st.online, rail: st.rail, railCls: st.rail ? 'on' : '', version: 'v' + VERSION
+        store: st.noStore ? '僅記憶體' : '本機瀏覽器', offline: !st.online, rail: st.rail, railCls: st.rail ? 'on' : '', version: 'v' + VERSION,
+        clock: pad2(st.now.getHours()) + ':' + pad2(st.now.getMinutes()), date: st.now.getFullYear() + '-' + pad2(st.now.getMonth() + 1) + '-' + pad2(st.now.getDate()) + ' ' + WEEK[st.now.getDay()],
+        sfx: st.sfx, noSfx: !st.sfx, sfxLabel: st.sfx ? '音效開' : '音效關', outCls: st.pgOut ? 'deck-out' : '', deskCls: st.desk ? '' : 'min', deskOpen: st.desk ? 'true' : 'false', deskLabel: st.desk ? '收合儀表台' : '展開儀表台', online: st.online, netLabel: st.online ? '連線中' : '離線'
       },
       dash: this._vm.dashboard, led: this._vm.ledger, res: this._vm.resources, ast: this._vm.assets, gdn: this._vm.garden, prj: this._vm.projects, ai: this._vm.ai, rep: this._vm.reports, ntf: this._vm.notifications, set: this._vm.settings,
       side: { insights: D.insights.map((i) => Object.assign({}, i, { go: () => this.nav(i.page) })), none: !D.insights.length, inc: this.M(D.month.inc), exp: this.M(D.month.exp), e7: D.a7.avg == null ? '—' : D.a7.avg.toFixed(1), pending: S.suggestions.filter(function (s) { return s.status === 'pending'; }).length },
-      md: md, templates: templates, moreItems: moreItems,
+      md: md, templates: templates, moreItems: moreItems, gh: this.vmGreen(), cons: this.vmConsole(),
       toasts: st.toasts.map((tt) => ({ msg: tt.msg, cls: tt.ach ? 'toast ach' : 'toast', ach: tt.ach && !reducedMotion && this.motionOn(), hasAction: !!tt.action, label: tt.action ? tt.action.label : '', run: () => { if (tt.action) tt.action.fn(); this.setState(function (s) { return { toasts: s.toasts.filter(function (x) { return x.id !== tt.id; }) }; }); } })),
       sparks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     };
