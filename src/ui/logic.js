@@ -5,7 +5,7 @@
    view values and user actions into engine calls.
    ===================================================================== */
 var E = WGE;
-var VERSION = '2.2.0';
+var VERSION = '2.3.0';
 var LS_KEY = 'wealth-garden-design-v2';
 /* Earlier versions on this site: the v1 PWA ('wealth-garden-state') and the v1 web prototype.
    They are only read, never written or deleted, so going back to an older version stays possible. */
@@ -64,11 +64,13 @@ var MOBILE_TABS = [['dashboard', '控制台', 'grid'], ['ledger', '記帳', 'lis
 var PAGE_VM = { dashboard: 'vmDash', ledger: 'vmLedger', resources: 'vmRes', assets: 'vmAssets', garden: 'vmGarden', projects: 'vmProjects', ai: 'vmAI', reports: 'vmReports', notifications: 'vmNotes', settings: 'vmSettings' };
 
 /* Calmer data palette: same hues as NEON CITY, lower chroma, readable on the dark ground. */
-var CAT = ['#1F6FD6', '#6D4FD8', '#C8337F', '#0E8A5F', '#C2570C', '#0B7F8C', '#A3437E', '#2F7FC9', '#7E62E0', '#9A6600', '#C93A52', '#5E6F8C'];
+var CAT = ['#35E0FF', '#FF9B3D', '#FF4FCF', '#4BE39A', '#FFC93C', '#B58CFF', '#2EF2D0', '#FF8FB8', '#7FB2FF', '#C8F26B', '#FF7A5C', '#9AA8CC'];
 var catCol = function (c, list) { return CAT[Math.max(0, list.indexOf(c)) % CAT.length]; };
-var STAGE_C = { seed: '#205FA6', sprout: '#1655B5', bud: '#5638BD', bloom: '#A8226F', stable: '#0A7550', dormant: '#52627E', amber: '#8C5100', specimen: '#4F5E78' };
+var STAGE_C = { seed: '#8FEAFF', sprout: '#35E0FF', bud: '#B58CFF', bloom: '#FF6FD8', stable: '#4BE39A', dormant: '#9AA8D2', amber: '#FFC93C', specimen: '#A9B4D6' };
 var STAGE_DESC = { seed: '新建立或構想', sprout: '持續投入中', bud: '有已驗證的階段成果', bloom: '所有里程碑已驗證', stable: '近期有實際持續收入', dormant: '暫停中', amber: '超出預算或標記風險', specimen: '已終止，保留紀錄' };
-var GROUP_COL = { cash: '#1F6FD6', bank: '#6D4FD8', invest: '#C8337F', realestate: '#9A6600', other: '#0B7F8C' };
+var GROUP_COL = { cash: '#35E0FF', bank: '#B58CFF', invest: '#FF4FCF', realestate: '#FFC93C', other: '#4BE39A' };
+/* cockpit system colour per section: nav lamps, HUD frame, top bar and panel edges follow it */
+var SEC = { dashboard: '#35E0FF', ledger: '#FF9B3D', resources: '#B58CFF', assets: '#FFC93C', garden: '#4BE39A', projects: '#2EF2D0', ai: '#FF4FCF', reports: '#7FB2FF', notifications: '#FF8FB8', settings: '#FFD25A' };
 
 var reducedMotion = (function () { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
 var lowPower = ((typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 8) <= 4;
@@ -90,7 +92,7 @@ function loadData() {
 }
 function clone(o) { return JSON.parse(JSON.stringify(o)); }
 function hexA(hex, a) {
-  var h = String(hex || '#1F6FD6').replace('#', '');
+  var h = String(hex || '#35E0FF').replace('#', '');
   if (h.length === 3) h = h.split('').map(function (c) { return c + c; }).join('');
   var n = parseInt(h, 16); if (isNaN(n)) n = 0x4FC3FF;
   return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
@@ -170,7 +172,7 @@ function ellipsePath(cx, cy, rx, ry, rot) {
 /** Plant drawing for a growth stage: every shape is a computed path, so one SVG serves all stages. */
 function plantVM(stage, opts) {
   opts = opts || {};
-  var c = STAGE_C[stage] || '#1F6FD6';
+  var c = STAGE_C[stage] || '#35E0FF';
   var h = { seed: 14, sprout: 34, bud: 44, bloom: 48, stable: 52, dormant: 28, amber: 36, specimen: 34 }[stage] || 20;
   var nl = { seed: 1, sprout: 3, bud: 4, bloom: 4, stable: 6, dormant: 2, amber: 3, specimen: 2 }[stage] || 1;
   var base = 82, top = base - h, leaves = '';
@@ -317,7 +319,7 @@ class Component extends DCLogic {
     return this._D;
   }
   M(c, cur, sign) { return this.state.data.privacy ? '••••••' : E.fmt(c, cur || 'TWD', !!sign); }
-  accent() { var a = this.props.accent; return (typeof a === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(a)) ? a : '#1655B5'; }
+  accent() { var a = this.props.accent; return (typeof a === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(a)) ? a : '#35E0FF'; }
 
   /* ---------- state helpers ---------- */
   upd(fn, audit) {
@@ -827,7 +829,7 @@ class Component extends DCLogic {
       var on = v === n;
       return {
         label: (n > 0 ? '+' : '') + n, aria: n + '：' + E.ELABEL[String(n)], on: on ? 'true' : 'false', cls: on ? 'on' : '',
-        bg: n < 0 ? 'rgba(201,58,82,' + (0.1 + Math.abs(n) * 0.11).toFixed(2) + ')' : n > 0 ? 'rgba(14,138,95,' + (0.1 + n * 0.11).toFixed(2) + ')' : 'rgba(30,80,150,.1)',
+        bg: n < 0 ? 'rgba(255,122,138,' + (0.08 + Math.abs(n) * 0.075).toFixed(2) + ')' : n > 0 ? 'rgba(75,227,154,' + (0.08 + n * 0.075).toFixed(2) + ')' : 'rgba(150,170,220,.16)',
         pick: () => this.setForm({ energy: n })
       };
     });
@@ -871,12 +873,12 @@ class Component extends DCLogic {
       empty: empty, has: !empty,
       hero: { net: this.M(tv('net', D.now.net)), assets: this.M(tv('assets', D.now.assets)), liab: this.M(tv('liab', D.now.liab)), cc: this.M(D.now.ccOwed), delta: '12 個月 ' + (S.privacy ? '•••' : E.fmt(delta, 'TWD', true)), deltaCls: delta >= 0 ? 'ok' : 'b', chart: this.chart('nw', labels12, [{ name: '淨資產', color: acc, values: nw }], { h: 120 }) },
       tiles: [
-        { label: '本月實際收入', code: 'INCOME', val: this.M(tv('inc', D.month.inc)), cls: 'pos', sub: '不含轉帳、換匯與評價變動', spark: spark(m6.map(function (m) { return m.inc; })), sc: '#0E8A5F' },
-        { label: '本月支出', code: 'SPEND', val: this.M(tv('exp', D.month.exp)), cls: '', sub: '已扣退款；信用卡於刷卡時認列', spark: spark(m6.map(function (m) { return m.exp; })), sc: '#C93A52' },
-        { label: '本月現金流', code: 'FLOW', val: this.M(tv('cf', D.month.net), 'TWD', true), cls: D.month.net >= 0 ? 'pos' : 'neg', sub: '收入＋已實現損益 − 支出', spark: spark(m6.map(function (m) { return m.net; })), sc: '#6D4FD8' }
+        { label: '本月實際收入', code: 'INCOME', val: this.M(tv('inc', D.month.inc)), cls: 'pos', sub: '不含轉帳、換匯與評價變動', spark: spark(m6.map(function (m) { return m.inc; })), sc: '#4BE39A' },
+        { label: '本月支出', code: 'SPEND', val: this.M(tv('exp', D.month.exp)), cls: '', sub: '已扣退款；信用卡於刷卡時認列', spark: spark(m6.map(function (m) { return m.exp; })), sc: '#FF7A8A' },
+        { label: '本月現金流', code: 'FLOW', val: this.M(tv('cf', D.month.net), 'TWD', true), cls: D.month.net >= 0 ? 'pos' : 'neg', sub: '收入＋已實現損益 − 支出', spark: spark(m6.map(function (m) { return m.net; })), sc: '#B58CFF' }
       ],
       fixed: { inc: this.M(D.recInc), exp: this.M(D.recExp), net: this.M(D.recInc - D.recExp, 'TWD', true), cls: D.recInc - D.recExp >= 0 ? 'pos' : 'neg' },
-      cf: this.chart('cf', cf.labels, [{ name: '收入', color: '#0E8A5F', values: cf.inc }, { name: '支出', color: '#C93A52', values: cf.exp, area: false }, { name: '淨現金流', color: acc, values: cf.net, area: false, dash: '7 6' }], { h: 230 }),
+      cf: this.chart('cf', cf.labels, [{ name: '收入', color: '#4BE39A', values: cf.inc }, { name: '支出', color: '#FF7A8A', values: cf.exp, area: false }, { name: '淨現金流', color: acc, values: cf.net, area: false, dash: '7 6' }], { h: 230 }),
       cfUnit: cf.unit, ranges: this.seg([['7', '7 日'], ['30', '30 日'], ['90', '90 日'], ['365', '年度']], st.dashRange, (v) => this.setState({ dashRange: v, hov: null })),
       donut: donut, legend: legend, drill: drill, drillShow: !!pick, drillEmpty: !!pick && !drill.length, drillTitle: pg ? pg.label + ' 明細' : '',
       radar: radar, radarDefs: radarDefs,
@@ -911,7 +913,7 @@ class Component extends DCLogic {
       ibars: this.bars(Object.entries(f.ic).sort(function (a, b) { return b[1] - a[1]; }), f.inc, function (c) { return catCol(c, icats); }, (c) => this.setState({ lcat: c, ltype: '', ltab: 'list' })),
       ebarsNone: !Object.keys(f.ec).length, ibarsNone: !Object.keys(f.ic).length,
       range: E.fmtD(st.lfrom) + ' – ' + E.fmtD(st.lto),
-      monthly: this.chart('lm', months.map(function (m) { return m.k.slice(2).replace('-', '/'); }), [{ name: '收入', color: '#0E8A5F', values: months.map(function (m) { return m.inc + m.real; }) }, { name: '支出', color: '#C93A52', values: months.map(function (m) { return m.exp; }) }], { h: 220 }),
+      monthly: this.chart('lm', months.map(function (m) { return m.k.slice(2).replace('-', '/'); }), [{ name: '收入', color: '#4BE39A', values: months.map(function (m) { return m.inc + m.real; }) }, { name: '支出', color: '#FF7A8A', values: months.map(function (m) { return m.exp; }) }], { h: 220 }),
       rec: S.recurring.map((r) => ({
         desc: r.desc, kind: E.TYPES[r.kind], cat: r.cat, day: '每月 ' + r.day + ' 日', amt: this.M(r.amt), active: r.active, stateLabel: r.active ? '啟用中' : '已停用', stateCls: r.active ? 'ok' : '',
         toggle: () => this.upd(function (s) { var x = s.recurring.find(function (y) { return y.id === r.id; }); x.active = !x.active; }, { action: r.active ? '停用定期項目' : '啟用定期項目', entity: 'recurring_entries', detail: r.desc }),
@@ -958,8 +960,8 @@ class Component extends DCLogic {
       opp: this.M(Math.round(hourly * stt.min / 60)), hourly: this.M(hourly),
       avgs: [['今日', D.a1.avg], ['7 日', D.a7.avg], ['30 日', D.a30.avg]].map(function (x) { return { l: x[0] + '平均', v: fmtAvg(x[1]), cls: clsAvg(x[1]) }; }),
       count: stt.count + ' 項活動',
-      dist: Array.from({ length: 11 }, function (_, i) { return i - 5; }).map(function (n) { return { n: n, h: Math.max(4, stt.dist[n] / mxd * 100).toFixed(0), color: n < 0 ? '#C93A52' : n > 0 ? '#0E8A5F' : '#6A7A96', op: stt.dist[n] ? 0.9 : 0.22, title: n + '：' + stt.dist[n] + ' 項', cnt: stt.dist[n] }; }),
-      chart: this.chart('en', en.map(function (x) { return x.d.slice(5).replace('-', '/'); }), [{ name: '平均心力', color: '#6D4FD8', values: en.map(function (x) { return x.avg == null ? null : Math.round(x.avg * 100); }), area: false, fmt: function (v) { return v == null ? '—' : (v / 100).toFixed(1); } }], { h: 170, yfmt: function (v) { return (v / 100).toFixed(0); } }),
+      dist: Array.from({ length: 11 }, function (_, i) { return i - 5; }).map(function (n) { return { n: n, h: Math.max(4, stt.dist[n] / mxd * 100).toFixed(0), color: n < 0 ? '#FF7A8A' : n > 0 ? '#4BE39A' : '#8C9AC4', op: stt.dist[n] ? 0.9 : 0.22, title: n + '：' + stt.dist[n] + ' 項', cnt: stt.dist[n] }; }),
+      chart: this.chart('en', en.map(function (x) { return x.d.slice(5).replace('-', '/'); }), [{ name: '平均心力', color: '#B58CFF', values: en.map(function (x) { return x.avg == null ? null : Math.round(x.avg * 100); }), area: false, fmt: function (v) { return v == null ? '—' : (v / 100).toFixed(1); } }], { h: 170, yfmt: function (v) { return (v / 100).toFixed(0); } }),
       drains: stt.drains.map(function (a) { return { title: a.title, v: String(a.energy) }; }), drainsNone: !stt.drains.length,
       recov: stt.recov.map(function (a) { return { title: a.title, v: '+' + a.energy }; }), recovNone: !stt.recov.length,
       rows: stt.list.slice(0, 80).map((a) => {
@@ -1051,12 +1053,12 @@ class Component extends DCLogic {
   projectEvents(p) {
     var S = this.state.data, D = this.getD(), m = D.pm[p.id], ev = [];
     if (!m) return ev;
-    (p.history || []).forEach(function (h) { ev.push({ date: h.date, text: h.text, c: '#6D4FD8', k: '計畫調整' }); });
-    (p.milestones || []).forEach(function (x) { if (x.verified) ev.push({ date: x.date, text: '里程碑已驗證：' + x.name, c: '#C8337F', k: '成果驗證' }); });
-    (p.tasks || []).forEach(function (t) { if (t.done && t.doneDate) ev.push({ date: t.doneDate, text: '完成任務：' + t.text, c: '#1F6FD6', k: '任務完成' }); });
-    m.txs.forEach(function (x) { var inc = x.t.type === 'income' || x.t.type === 'realized'; ev.push({ date: x.t.date, text: (inc ? '收入產生：' : '金錢投入：') + x.t.desc + '（' + x.pct + '%）', amt: x.part, c: inc ? '#0E8A5F' : '#C93A52', k: inc ? '收入產生' : '投入' }); });
-    m.acts.forEach(function (x) { ev.push({ date: x.a.date, text: '時間投入：' + x.a.title + ' ' + E.fmtMin(x.a.minutes * x.pct / 100), c: '#1A55C8', k: '投入時間' }); });
-    S.suggestions.filter(function (s) { return s.projectId === p.id; }).forEach(function (s) { ev.push({ date: s.decided || s.created, text: '建議草案核准：' + s.title, c: '#9A6600', k: 'AI 建議' }); });
+    (p.history || []).forEach(function (h) { ev.push({ date: h.date, text: h.text, c: '#B58CFF', k: '計畫調整' }); });
+    (p.milestones || []).forEach(function (x) { if (x.verified) ev.push({ date: x.date, text: '里程碑已驗證：' + x.name, c: '#FF4FCF', k: '成果驗證' }); });
+    (p.tasks || []).forEach(function (t) { if (t.done && t.doneDate) ev.push({ date: t.doneDate, text: '完成任務：' + t.text, c: '#35E0FF', k: '任務完成' }); });
+    m.txs.forEach(function (x) { var inc = x.t.type === 'income' || x.t.type === 'realized'; ev.push({ date: x.t.date, text: (inc ? '收入產生：' : '金錢投入：') + x.t.desc + '（' + x.pct + '%）', amt: x.part, c: inc ? '#4BE39A' : '#FF7A8A', k: inc ? '收入產生' : '投入' }); });
+    m.acts.forEach(function (x) { ev.push({ date: x.a.date, text: '時間投入：' + x.a.title + ' ' + E.fmtMin(x.a.minutes * x.pct / 100), c: '#7FB2FF', k: '投入時間' }); });
+    S.suggestions.filter(function (s) { return s.projectId === p.id; }).forEach(function (s) { ev.push({ date: s.decided || s.created, text: '建議草案核准：' + s.title, c: '#FFC93C', k: 'AI 建議' }); });
     return ev.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
   }
   vmProjects() {
@@ -1066,7 +1068,7 @@ class Component extends DCLogic {
       var m = D.pm[pp.id], ms = pp.milestones || [], ver = ms.filter(function (x) { return x.verified; }).length;
       return Object.assign({ name: pp.name, status: pp.status, goal: pp.goal || '—', prog: ms.length ? (ver / ms.length * 100).toFixed(0) : '0', progLabel: ver + '/' + ms.length + ' 里程碑', money: this.M(m.money), time: E.fmtMin(m.time), income: this.M(m.income), demo: !!pp.demo, open: () => this.setState({ projSel: pp.id }) }, { plant: plantVM(D.stageOf(pp), { grow: st.grew === 'p:' + pp.id }) });
     });
-    var d = { has: false, plant: plantVM('seed'), kv: [], ms: [], tasks: [], allocs: [], allocNone: true, ev: [], evNone: true, status: [], name: '', statusLabel: '', stageLabel: '', stageColor: '#1F6FD6', demo: false, msName: '', taskName: '', msNone: true, tasksNone: true };
+    var d = { has: false, plant: plantVM('seed'), kv: [], ms: [], tasks: [], allocs: [], allocNone: true, ev: [], evNone: true, status: [], name: '', statusLabel: '', stageLabel: '', stageColor: '#35E0FF', demo: false, msName: '', taskName: '', msNone: true, tasksNone: true };
     if (p) {
       var m = D.pm[p.id], stage = D.stageOf(p), avgE = m.energy.length ? (m.energy.reduce(function (a, b) { return a + b; }, 0) / m.energy.length).toFixed(1) : null;
       d = {
@@ -1347,9 +1349,9 @@ class Component extends DCLogic {
     var unread = D.notes.filter(function (n) { return S.notifRead.indexOf(n.id) < 0; }).length;
     var nav = NAV_GROUPS.map((g) => ({
       label: g.label,
-      items: g.items.map((n) => ({ id: n[0], label: n[1], code: n[2], ic: IC[n[3]], cls: page === n[0] ? 'on' : '', cur: page === n[0] ? 'page' : undefined, go: () => this.nav(n[0]), badge: n[0] === 'notifications' ? unread : 0, noBadge: !(n[0] === 'notifications' && unread) }))
+      items: g.items.map((n) => ({ id: n[0], label: n[1], code: n[2], ic: IC[n[3]], c: SEC[n[0]], cls: page === n[0] ? 'on' : '', cur: page === n[0] ? 'page' : undefined, go: () => this.nav(n[0]), badge: n[0] === 'notifications' ? unread : 0, noBadge: !(n[0] === 'notifications' && unread) }))
     }));
-    var tabs = MOBILE_TABS.map((n) => ({ label: n[1], ic: IC[n[2]], cls: page === n[0] ? 'on' : '', cur: page === n[0] ? 'page' : undefined, go: () => this.nav(n[0]) }));
+    var tabs = MOBILE_TABS.map((n) => ({ label: n[1], ic: IC[n[2]], c: SEC[n[0]], cls: page === n[0] ? 'on' : '', cur: page === n[0] ? 'page' : undefined, go: () => this.nav(n[0]) }));
     var moreOn = MOBILE_TABS.every(function (n) { return n[0] !== page; });
     /* dialogs */
     var mo = st.modal, mk = mo ? mo.kind : '';
@@ -1374,16 +1376,18 @@ class Component extends DCLogic {
     } catch (e) { md.err = String(e && e.message || e); }
     ['tx', 'act', 'proj', 'simple'].forEach(function (k) { if (Array.isArray(md[k].errs)) md[k].errs = md[k].errs.map(function (t) { return { t: t }; }); });
     var templates = S.templates.map((tp) => ({ name: tp.name, use: () => this.openTx({ type: tp.type, amt: tp.amt, cat: tp.cat, acct: tp.acct, desc: tp.desc }) }));
-    var moreItems = NAV_FLAT.filter(function (n) { return !MOBILE_TABS.some(function (t) { return t[0] === n[0]; }); }).map((n) => ({ label: n[1], ic: IC[n[3]], go: () => this.nav(n[0]), badge: n[0] === 'notifications' ? unread : 0 }));
+    var moreItems = NAV_FLAT.filter(function (n) { return !MOBILE_TABS.some(function (t) { return t[0] === n[0]; }); }).map((n) => ({ label: n[1], ic: IC[n[3]], c: SEC[n[0]], go: () => this.nav(n[0]), badge: n[0] === 'notifications' ? unread : 0 }));
     var dens = this.props.density === '緊湊' ? 'compact' : '';
+    var sec = SEC[page] || acc, navIx = NAV_FLAT.findIndex(function (n) { return n[0] === page; });
+    var navCode = navIx >= 0 ? NAV_FLAT[navIx][2] : String(page).toUpperCase();
     /* neon strength tweak: [text glow, outer halo, panel glow] alpha */
     var gl = this.props.glow === '柔和' ? [0.32, 0.12, 0.22] : this.props.glow === '強烈' ? [0.8, 0.36, 0.5] : [0.55, 0.22, 0.36];
     return {
-      t: { acc: acc, accSoft: hexA(acc, 0.13), accLine: hexA(acc, 0.48), accGlow: hexA(acc, gl[2]), accNeon: hexA(acc, gl[0]), accNeon2: hexA(acc, gl[1]), cls: [dens, this.props.scanlines ? 'scan' : '', this.motionOn() ? '' : 'nomo'].join(' ') },
+      t: { acc: acc, accSoft: hexA(acc, 0.13), accLine: hexA(acc, 0.48), accGlow: hexA(acc, gl[2]), accNeon: hexA(acc, gl[0]), accNeon2: hexA(acc, gl[1]), cls: [dens, this.props.scanlines ? 'scan' : '', this.motionOn() ? '' : 'nomo', 'pg-' + page].join(' '), sec: sec, secSoft: hexA(sec, 0.14), secLine: hexA(sec, 0.5), secGlow: hexA(sec, gl[2] + 0.06) },
       ic: IC, h: this.h, go: this.go, pg: pg, pageErr: pageErr, hasPageErr: !!pageErr,
       nav: nav, tabs: tabs, moreCls: moreOn ? 'on' : '', unread: unread, hasUnread: unread > 0,
       ui: {
-        crumb: 'wg://' + page, demo: S.mode === 'demo', user: S.mode !== 'demo', privacy: !!S.privacy, noPrivacy: !S.privacy, privLabel: S.privacy ? '已遮罩' : '隱私遮罩',
+        crumb: 'COCKPIT://' + navCode, chan: 'CH ' + String(navIx + 1).padStart(2, '0'), demo: S.mode === 'demo', user: S.mode !== 'demo', privacy: !!S.privacy, noPrivacy: !S.privacy, privLabel: S.privacy ? '已遮罩' : '隱私遮罩',
         store: st.noStore ? '僅記憶體' : '本機瀏覽器', offline: !st.online, rail: st.rail, railCls: st.rail ? 'on' : '', version: 'v' + VERSION
       },
       dash: this._vm.dashboard, led: this._vm.ledger, res: this._vm.resources, ast: this._vm.assets, gdn: this._vm.garden, prj: this._vm.projects, ai: this._vm.ai, rep: this._vm.reports, ntf: this._vm.notifications, set: this._vm.settings,
