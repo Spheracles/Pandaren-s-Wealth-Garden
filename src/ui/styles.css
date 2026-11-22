@@ -1053,3 +1053,9 @@ body:where(:has(.wg.th-ink)){margin:0;background:#3A3F47}
 .wg.th-ink .theme-opt:hover{border-color:var(--ink);background:rgba(255,255,255,.7)}
 .wg.th-ink .theme-opt.on{border-color:var(--ink);background:rgba(255,255,255,.78);box-shadow:inset 0 0 0 3px #004750,3px 4px 0 rgba(14,16,19,.82)}
 .wg.th-ink .theme-opt:focus-visible{outline-color:#004750}
+
+/* text sitting on hatched steel gets a pale outline so the hatching never cuts through the letters */
+:where(.wg.th-ink){--halo:1px 0 0 #EEF0F2,-1px 0 0 #EEF0F2,0 1px 0 #EEF0F2,0 -1px 0 #EEF0F2,1px 1px 0 #EEF0F2,-1px -1px 0 #EEF0F2,1px -1px 0 #EEF0F2,-1px 1px 0 #EEF0F2,0 0 3px #EEF0F2}
+:where(.wg.th-ink) :is(.phd,.rail,.side,.screen,.pod,.desk,.bnav,.plaque){text-shadow:var(--halo)}
+:where(.wg.th-ink) :is(.phd h1,.pl-text b,.pl-text span,.brand b){text-shadow:var(--halo)}
+:where(.wg.th-ink :is(.phd,.rail,.side,.screen,.pod,.desk,.bnav,.plaque) :is(.pn,.ins,.gh-read,.note,.btn,.tab,.pk,.chip,.led,.inp,.term,.mini,.plate,.seg,.empty,.dlg,.cmd,.toast,.badge,.top,.kpis,.errs,.offline,.gauge,.scope,.theme-opt)){text-shadow:none}
