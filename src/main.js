@@ -18,13 +18,16 @@ window.addEventListener('error', (e) => recordCrash(e.message));
 window.addEventListener('unhandledrejection', (e) => recordCrash((e.reason && e.reason.message) || e.reason));
 
 /* Appearance defaults — the same values the design canvas uses.
-   Optional URL overrides, e.g. ?glow=柔和&motion=0&scanlines=1&density=緊湊&accent=2EE6C8 */
+   Optional URL overrides, e.g. ?theme=neon&glow=柔和&motion=0&scanlines=1&density=緊湊&accent=2EE6C8
+   (theme: ink 漫畫墨線 / neon 霓虹駕駛艙; without it the style saved in this browser is used) */
 function readProps() {
   const p = { accent: '#004750', glow: '標準', density: '舒適', scanlines: false, motion: true };
   try {
     const q = new URLSearchParams(window.location.search);
     const acc = q.get('accent');
     if (acc && /^#?[0-9a-fA-F]{6}$/.test(acc)) p.accent = acc[0] === '#' ? acc : '#' + acc;
+    const theme = q.get('theme');
+    if (theme === 'ink' || theme === 'neon' || theme === '墨線' || theme === '霓虹') p.theme = theme;
     const glow = q.get('glow');
     if (glow === '柔和' || glow === '標準' || glow === '強烈') p.glow = glow;
     const dens = q.get('density');

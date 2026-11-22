@@ -41,3 +41,20 @@ test('older local data keys are read for migration', () => {
   const logic = readFileSync(new URL('../src/ui/logic.js', import.meta.url), 'utf8');
   assert.match(logic, /LEGACY_KEYS = \['wealth-garden-state', 'wealth-garden-neon-v1'\]/);
 });
+
+test('both cockpit styles are selectable and the ink layer only applies to .th-ink', () => {
+  const logic = readFileSync(new URL('../src/ui/logic.js', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../src/ui/styles.css', import.meta.url), 'utf8');
+  assert.ok(body.includes('set.themes') && body.includes('{{o.pick}}'), 'style picker in settings');
+  assert.ok(body.includes('class="seat-neon"') && body.includes('class="seat-ink"'), 'each style keeps its own seat');
+  assert.match(logic, /var PAL = \{\s*neon:/);
+  assert.match(logic, /'wg-theme'/);
+  assert.match(logic, /'th-' \+ THEME/);
+  // every rule after the INKED COCKPIT header must be scoped to the ink style (or be a keyframes block)
+  const start = css.lastIndexOf('/* =====', css.indexOf('INKED COCKPIT'));
+  const ink = css.slice(start).replace(/\/\*[\s\S]*?\*\//g, '').replace(/@keyframes[^{]+\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, '');
+  const selectors = [...ink.matchAll(/(?:^|[}\n])\s*([^@{}][^{}]*)\{/g)].map((m) => m[1].trim()).filter((s) => s && !s.startsWith('@'));
+  assert.ok(selectors.length > 200);
+  const loose = selectors.flatMap((s) => s.split(',')).map((s) => s.trim()).filter((s) => !/th-ink/.test(s));
+  assert.deepEqual(loose, []);
+});
