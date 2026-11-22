@@ -38,7 +38,7 @@
         <div class="ph"><div><div class="eb">ASSETS</div><h2>資產配置</h2></div><span class="tiny dim">點選類別看明細</span></div>
         <div class="donut-wrap">
           <svg class="donut" viewBox="0 0 180 180" role="img" aria-label="資產結構環形圖">
-            <circle cx="90" cy="90" r="62" style="fill: none; stroke: rgba(150,180,240,.12); stroke-width: 18"></circle>
+            <circle cx="90" cy="90" r="62" style="fill: none; stroke: rgba(0,60,70,.14); stroke-width: 18"></circle>
             @@ARC:cash@@
             @@ARC:bank@@
             @@ARC:invest@@
@@ -54,7 +54,7 @@
           </div>
         </div>
         <sc-if value="{{dash.drillShow}}" hint-placeholder-val="{{ false }}">
-          <div class="stack" style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(150,180,240,.16); gap: 6px">
+          <div class="stack" style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(0,60,70,.2); gap: 6px">
             <span class="tiny dim">{{dash.drillTitle}}</span>
             <sc-for list="{{dash.drill}}" as="d" hint-placeholder-count="2"><div class="flex between small"><span>{{d.name}}</span><span class="num">{{d.val}}</span></div></sc-for>
             <sc-if value="{{dash.drillEmpty}}" hint-placeholder-val="{{ false }}"><span class="small dim">此類別沒有項目。</span></sc-if>
@@ -136,7 +136,7 @@
           <polygon class="rg" points="{{dash.radar.r2}}"></polygon>
           <polygon class="rg" points="{{dash.radar.r3}}"></polygon>
           <path class="rg" d="{{dash.radar.spokes}}"></path>
-          <polygon points="{{dash.radar.poly}}" style="fill: rgba(255,79,207,.16); stroke: #FF4FCF; stroke-width: 1.6; filter: drop-shadow(0 0 5px rgba(255,79,207,.6))"></polygon>
+          <polygon points="{{dash.radar.poly}}" style="fill: rgba(91,44,145,.16); stroke: #5B2C91; stroke-width: 1.8"></polygon>
           <path d="{{dash.radar.dots}}" style="fill: {{t.acc}}"></path>
           @@RLABEL:0@@
           @@RLABEL:1@@
@@ -561,7 +561,7 @@
     <div class="stack">
       <sc-for list="{{ai.pending}}" as="s" hint-placeholder-count="1">
         <article class="sugg">
-          <div class="flex between" style="align-items: flex-start"><div class="stack2"><span class="eb" style="color: #B58CFF">{{s.source}}</span><h2>{{s.title}}</h2></div><span class="chip v">草案・待核准</span></div>
+          <div class="flex between" style="align-items: flex-start"><div class="stack2"><span class="eb" style="color: #4A2380">{{s.source}}</span><h2>{{s.title}}</h2></div><span class="chip v">草案・待核准</span></div>
           @@KV:s.rows:kv@@
           <div class="stack2"><span class="small dim">執行步驟</span><ol><sc-for list="{{s.steps}}" as="sp" hint-placeholder-count="3"><li>{{sp.t}}</li></sc-for></ol></div>
           <div class="dlg-f"><button type="button" class="btn danger" onClick="{{s.reject}}">駁回</button><button type="button" class="btn pri" onClick="{{s.approve}}">@@IS:check@@核准並建立計畫</button></div>
@@ -631,7 +631,7 @@
   <section class="pn">
     <div class="rows">
       <sc-for list="{{ntf.list}}" as="n" hint-placeholder-count="6">
-        <button type="button" class="row click" style="opacity: {{n.op}}" onClick="{{n.go}}"><span class="chip {{n.tone}}">{{n.type}}</span><span class="grow small">{{n.text}}</span><sc-if value="{{n.unread}}" hint-placeholder-val="{{ true }}"><i class="swatch" style="background: #FF4FCF; border-radius: 50%"></i></sc-if></button>
+        <button type="button" class="row click" style="opacity: {{n.op}}" onClick="{{n.go}}"><span class="chip {{n.tone}}">{{n.type}}</span><span class="grow small">{{n.text}}</span><sc-if value="{{n.unread}}" hint-placeholder-val="{{ true }}"><i class="swatch" style="background: #5B2C91; border-radius: 50%"></i></sc-if></button>
       </sc-for>
     </div>
     <sc-if value="{{ntf.none}}" hint-placeholder-val="{{ false }}"><div class="empty">目前沒有通知。</div></sc-if>

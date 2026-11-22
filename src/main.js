@@ -20,7 +20,7 @@ window.addEventListener('unhandledrejection', (e) => recordCrash((e.reason && e.
 /* Appearance defaults — the same values the design canvas uses.
    Optional URL overrides, e.g. ?glow=柔和&motion=0&scanlines=1&density=緊湊&accent=2EE6C8 */
 function readProps() {
-  const p = { accent: '#35E0FF', glow: '標準', density: '舒適', scanlines: false, motion: true };
+  const p = { accent: '#004750', glow: '標準', density: '舒適', scanlines: false, motion: true };
   try {
     const q = new URLSearchParams(window.location.search);
     const acc = q.get('accent');
@@ -57,13 +57,13 @@ class Guard extends React.Component {
   render() {
     if (!this.state.err) return this.props.children;
     const h = React.createElement;
-    const box = { maxWidth: 560, margin: '12vh auto', padding: 28, borderRadius: 16, background: '#0B1640', border: '1px solid rgba(53,224,255,.45)', color: '#F2F6FF', fontFamily: '"Noto Sans TC", system-ui, sans-serif', lineHeight: 1.7 };
-    const btn = { marginRight: 10, marginTop: 14, padding: '9px 16px', borderRadius: 10, border: '1px solid #8EF3FF', background: '#35E0FF', color: '#04112E', cursor: 'pointer', font: 'inherit' };
-    return h('div', { style: { minHeight: '100vh', background: '#040A22', padding: 16 } },
+    const box = { maxWidth: 560, margin: '12vh auto', padding: 28, borderRadius: 16, background: '#C9F0F3', border: '9px solid #B4B9C1', color: '#0B2A31', fontFamily: '"Noto Sans TC", system-ui, sans-serif', lineHeight: 1.7 };
+    const btn = { marginRight: 10, marginTop: 14, padding: '9px 16px', borderRadius: 10, border: '2px solid #0E1013', background: '#004750', color: '#F2FEFF', cursor: 'pointer', font: 'inherit' };
+    return h('div', { style: { minHeight: '100vh', background: '#3A3F47', padding: 16 } },
       h('div', { style: box, role: 'alert' },
         h('h1', { style: { fontSize: 20, margin: '0 0 8px' } }, '畫面發生錯誤'),
-        h('p', { style: { color: '#C4CEEC', margin: 0 } }, '你的財務資料沒有被修改，仍保存在這個瀏覽器裡。可以重新整理頁面，或先下載一份備份。'),
-        h('pre', { style: { whiteSpace: 'pre-wrap', color: '#FF9AA6', fontSize: 12, marginTop: 12 } }, String(this.state.err && this.state.err.message || this.state.err)),
+        h('p', { style: { color: '#1F4A53', margin: 0 } }, '你的財務資料沒有被修改，仍保存在這個瀏覽器裡。可以重新整理頁面，或先下載一份備份。'),
+        h('pre', { style: { whiteSpace: 'pre-wrap', color: '#7E0C1F', fontSize: 12, marginTop: 12 } }, String(this.state.err && this.state.err.message || this.state.err)),
         h('button', { type: 'button', style: btn, onClick: () => window.location.reload() }, '重新整理'),
         h('button', { type: 'button', style: btn, onClick: () => this.backup() }, '下載本機資料備份')));
   }
