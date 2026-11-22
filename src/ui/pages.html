@@ -3,7 +3,8 @@
 <section class="page" aria-label="財富總覽控制台">
 <div class="deck-boot" aria-hidden="true"></div>
   <div class="phd">
-    <div><div class="eb">WEALTH GARDEN // FINANCIAL COMMAND CENTER</div><h1>財富總覽控制台</h1></div>
+    <div><div class="eb">WEALTH GARDEN OVERVIEW DASHBOARD</div><h1>財富總覽控制台</h1></div>
+    <p class="tagline hide-m">經營財務・培育資產・讓財富在你的花園中持續生長<small>MANAGE FINANCE · CULTIVATE ASSETS · LET YOUR WEALTH GROW IN THE GARDEN</small></p>
     <div class="acts hide-m">
       <button type="button" class="btn" onClick="{{h.addActivity}}">@@I:clock@@記錄時間與心力</button>
       <button type="button" class="btn pri" onClick="{{h.addExpense}}">@@I:plus@@快速記帳</button>
@@ -13,42 +14,28 @@
     <div class="empty"><p>尚無財務資料。系統不會填入看似真實的數字；請先建立帳戶或完成設定精靈。</p><div class="acts"><button type="button" class="btn pri" onClick="{{h.wizard}}">開始設定精靈</button><button type="button" class="btn" onClick="{{h.newAccount}}">新增帳戶</button></div></div>
   </sc-if>
   <sc-if value="{{dash.has}}" hint-placeholder-val="{{ true }}">
-    <div class="g gd">
-      <section class="pn hud" aria-label="財富脈動 Wealth Pulse">
-        <div class="ph"><div><div class="eb">WEALTH PULSE</div><h2>淨資產</h2></div><span class="chip {{dash.hero.deltaCls}}">{{dash.hero.delta}}</span></div>
-        <div class="hero-val">{{dash.hero.net}}</div>
-        <div class="tiny dim">總資產 − 總負債，外幣依手動匯率換算</div>
-        <div class="split">
-          <div class="stack2"><span class="lab">總資產</span><span class="num v">{{dash.hero.assets}}</span><span class="tiny dim">含未實現評價</span></div>
-          <div class="stack2"><span class="lab">總負債</span><span class="num v neg">{{dash.hero.liab}}</span><span class="tiny dim">信用卡未繳 {{dash.hero.cc}}＋貸款</span></div>
-        </div>
-        <div class="eb" style="margin-bottom: 10px">NET WORTH · 12 MONTHS</div>
-        @@CHART:dash.hero.chart@@
-      </section>
-      <div class="gtiles">
-        <sc-for list="{{dash.tiles}}" as="k" hint-placeholder-count="3">
-          <section class="pn tile">
-            <div class="trow"><span class="lab">{{k.label}}</span><svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline points="{{k.spark}}" style="stroke: {{k.sc}}"></polyline></svg></div>
-            <div class="val {{k.cls}}">{{k.val}}</div>
-            <div class="sub">{{k.sub}}</div>
-          </section>
-        </sc-for>
-        <section class="pn tile">
-          <div class="trow"><span class="lab">每月固定收支</span><span class="chip">依定期項目</span></div>
-          <div class="fx2"><div class="stack2"><span class="tiny dim">持續性收入</span><span class="num v pos">{{dash.fixed.inc}}</span></div><div class="stack2"><span class="tiny dim">固定支出</span><span class="num v">{{dash.fixed.exp}}</span></div></div>
-          <div class="sub">每月差額 <span class="num {{dash.fixed.cls}}">{{dash.fixed.net}}</span></div>
+    <div class="kpis4">
+      <sc-for list="{{dash.kpis}}" as="k" hint-placeholder-count="4">
+        <section class="pn kpi {{k.tint}}" aria-label="{{k.label}}">
+          <span class="kic"><svg class="ico lg" viewBox="0 0 24 24" aria-hidden="true"><path d="{{k.ic}}"></path></svg></span>
+          <div class="kb">
+            <span class="kl"><b>{{k.label}}</b><small>{{k.code}}</small></span>
+            <span class="kv2 num {{k.cls}}">{{k.val}}</span>
+            <span class="tiny dim">{{k.sub}}</span>
+          </div>
+          <svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline points="{{k.spark}}" style="stroke: {{k.sc}}"></polyline></svg>
         </section>
-      </div>
+      </sc-for>
     </div>
 
-    <div class="g gd">
-      <section class="pn">
+    <div class="g dash3">
+      <section class="pn t-cyan">
         <div class="ph"><div><div class="eb">CASH FLOW</div><h2>現金流趨勢</h2></div>@@SEG:dash.ranges:o:檢視區間@@</div>
         @@CHART:dash.cf@@
         <div class="legend">@@LEGEND:dash.cf@@<span class="dim">{{dash.cfUnit}}</span></div>
       </section>
-      <section class="pn">
-        <div class="ph"><div><div class="eb">ASSET STRUCTURE</div><h2>資產結構</h2></div><span class="tiny dim">點選類別看明細</span></div>
+      <section class="pn t-teal">
+        <div class="ph"><div><div class="eb">ASSETS</div><h2>資產配置</h2></div><span class="tiny dim">點選類別看明細</span></div>
         <div class="donut-wrap">
           <svg class="donut" viewBox="0 0 180 180" role="img" aria-label="資產結構環形圖">
             <circle cx="90" cy="90" r="62" style="fill: none; stroke: rgba(150,180,240,.12); stroke-width: 18"></circle>
@@ -74,10 +61,74 @@
           </div>
         </sc-if>
       </section>
+      <section class="pn t-vio">
+        <div class="ph"><div><div class="eb">AI INSIGHTS</div><h2>AI 財富洞察</h2></div><span class="chip w">AI 未連線 · 規則式</span></div>
+        <div class="stack" style="gap: 10px">
+          <sc-for list="{{dash.insights}}" as="i" hint-placeholder-count="3">
+            <button type="button" class="ins" onClick="{{i.go}}"><span class="flex between"><b>{{i.title}}</b><span class="chip {{i.tone}}">建議</span></span><span>{{i.body}}</span><span class="tiny dim">{{i.basis}}</span></button>
+          </sc-for>
+          <sc-if value="{{dash.insightsEmpty}}" hint-placeholder-val="{{ false }}"><p class="small dim">資料不足，暫無洞察。</p></sc-if>
+          <span class="tiny dim">以上由規則式統計產生；連線 AI 後才會顯示 AI 分析。</span>
+        </div>
+      </section>
     </div>
 
-    <div class="g g3">
-      <section class="pn">
+    <div class="g dash4">
+      <section class="pn t-cyan">
+        <div class="ph"><div><div class="eb">ACTIVITY · ENERGY · TIME</div><h2>活動・心力・時間</h2></div><button type="button" class="btn ghost sm" onClick="{{go.resources}}">詳細</button></div>
+        <div class="rings">
+          <sc-for list="{{dash.rings}}" as="r" hint-placeholder-count="3">
+            <div class="ring">
+              <span class="rdial"><svg viewBox="0 0 80 80" aria-hidden="true"><circle class="rt" cx="40" cy="40" r="34"></circle><circle class="rf" cx="40" cy="40" r="34" transform="rotate(-90 40 40)" style="stroke: {{r.color}}; stroke-dasharray: {{r.da}}"></circle></svg><b class="rv num">{{r.val}}</b></span>
+              <span class="rl"><b>{{r.label}}</b><small>{{r.code}}</small></span>
+              <span class="tiny dim">{{r.sub}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+      <section class="pn t-grn">
+        <div class="ph"><div><div class="eb">GARDEN</div><h2>財富花園成長</h2></div><button type="button" class="btn ghost sm" onClick="{{go.garden}}">進入花園</button></div>
+        <div class="plants sm">
+          <sc-for list="{{dash.plants}}" as="p" hint-placeholder-count="4">
+            <button type="button" class="plant" title="{{p.stageLabel}}" onClick="{{p.open}}">@@PLANT:p:64@@<span class="nm">{{p.name}}</span><span class="st" style="color: {{p.c}}">{{p.stageLabel}}</span></button>
+          </sc-for>
+        </div>
+        <sc-if value="{{dash.plantsEmpty}}" hint-placeholder-val="{{ false }}"><p class="small dim">尚無收入來源或培育計畫。</p></sc-if>
+      </section>
+      <section class="pn t-teal">
+        <div class="ph"><div><div class="eb">PLAN PROGRESS</div><h2>計畫進度</h2></div><button type="button" class="btn ghost sm" onClick="{{go.projects}}">全部計畫</button></div>
+        <div class="plans">
+          <sc-for list="{{dash.plans}}" as="p" hint-placeholder-count="3">
+            <button type="button" class="plan" onClick="{{p.go}}"><span class="flex between"><b class="small">{{p.name}}</b><span class="num small">{{p.pct}}</span></span><span class="prog"><i style="width: {{p.w}}%"></i></span><span class="tiny dim">{{p.sub}}</span></button>
+          </sc-for>
+          <sc-if value="{{dash.plansEmpty}}" hint-placeholder-val="{{ false }}"><p class="small dim">尚無培育計畫。</p></sc-if>
+        </div>
+      </section>
+      <section class="pn t-mag">
+        <div class="ph"><div><div class="eb">NOTIFICATIONS</div><h2>即時通知</h2></div><button type="button" class="btn ghost sm" onClick="{{go.notifications}}">全部</button></div>
+        <div class="stack" style="gap: 8px">
+          <sc-for list="{{dash.notes}}" as="n" hint-placeholder-count="3">
+            <button type="button" class="ins" onClick="{{n.go}}"><span class="flex between"><span class="chip {{n.tone}}">{{n.type}}</span><sc-if value="{{n.unread}}" hint-placeholder-val="{{ true }}"><i class="unread" aria-label="未讀"></i></sc-if></span><span class="small">{{n.text}}</span></button>
+          </sc-for>
+          <sc-if value="{{dash.notesEmpty}}" hint-placeholder-val="{{ false }}"><p class="small dim">目前沒有通知。</p></sc-if>
+        </div>
+      </section>
+    </div>
+
+    <div class="g gd">
+      <section class="pn hud" aria-label="財富脈動 Wealth Pulse">
+        <div class="ph"><div><div class="eb">WEALTH PULSE</div><h2>淨資產</h2></div><span class="chip {{dash.hero.deltaCls}}">{{dash.hero.delta}}</span></div>
+        <div class="hero-val">{{dash.hero.net}}</div>
+        <div class="tiny dim">總資產 − 總負債，外幣依手動匯率換算</div>
+        <div class="split">
+          <div class="stack2"><span class="lab">總資產</span><span class="num v">{{dash.hero.assets}}</span><span class="tiny dim">含未實現評價</span></div>
+          <div class="stack2"><span class="lab">總負債</span><span class="num v neg">{{dash.hero.liab}}</span><span class="tiny dim">信用卡未繳 {{dash.hero.cc}}＋貸款</span></div>
+          <div class="stack2"><span class="lab">每月固定收支差額</span><span class="num v {{dash.fixed.cls}}">{{dash.fixed.net}}</span><span class="tiny dim">收入 {{dash.fixed.inc}} · 支出 {{dash.fixed.exp}}</span></div>
+        </div>
+        <div class="eb" style="margin-bottom: 10px">NET WORTH · 12 MONTHS</div>
+        @@CHART:dash.hero.chart@@
+      </section>
+      <section class="pn t-mag">
         <div class="ph"><div><div class="eb">RESOURCE RADAR</div><h2>三維資源雷達</h2></div><button type="button" class="btn ghost sm" onClick="{{go.resources}}">詳細</button></div>
         <svg class="radar" viewBox="0 0 220 205" role="img" aria-label="三維資源雷達，正規化相對指標">
           <polygon class="rg" points="{{dash.radar.r0}}"></polygon>
@@ -100,25 +151,6 @@
           </div>
         </details>
       </section>
-      <section class="pn">
-        <div class="ph"><div><div class="eb">WEALTH GARDEN</div><h2>財富花園概覽</h2></div><button type="button" class="btn ghost sm" onClick="{{go.garden}}">進入花園</button></div>
-        <div class="plants sm">
-          <sc-for list="{{dash.plants}}" as="p" hint-placeholder-count="6">
-            <button type="button" class="plant" title="{{p.stageLabel}}" onClick="{{p.open}}">@@PLANT:p:64@@<span class="nm">{{p.name}}</span><span class="st" style="color: {{p.c}}">{{p.stageLabel}}</span></button>
-          </sc-for>
-        </div>
-        <sc-if value="{{dash.plantsEmpty}}" hint-placeholder-val="{{ false }}"><p class="small dim">尚無收入來源或培育計畫。</p></sc-if>
-      </section>
-      <section class="pn">
-        <div class="ph"><div><div class="eb">INSIGHTS</div><h2>AI 財富洞察</h2></div><span class="chip w">AI 未連線 · 規則式</span></div>
-        <div class="stack" style="gap: 10px">
-          <sc-for list="{{dash.insights}}" as="i" hint-placeholder-count="3">
-            <button type="button" class="ins" onClick="{{i.go}}"><span class="flex between"><b>{{i.title}}</b><span class="chip {{i.tone}}">建議</span></span><span>{{i.body}}</span><span class="tiny dim">{{i.basis}}</span></button>
-          </sc-for>
-          <sc-if value="{{dash.insightsEmpty}}" hint-placeholder-val="{{ false }}"><p class="small dim">資料不足，暫無洞察。</p></sc-if>
-          <span class="tiny dim">以上由規則式統計產生；連線 AI 後才會顯示 AI 分析。</span>
-        </div>
-      </section>
     </div>
 
     <div class="g g2">
@@ -126,7 +158,7 @@
         <div class="ph"><div><div class="eb">RECENT</div><h2>最近交易</h2></div><button type="button" class="btn ghost sm" onClick="{{go.ledger}}">全部紀錄</button></div>
         <div class="rows"><sc-for list="{{dash.recent}}" as="r" hint-placeholder-count="6">@@TXROW:r@@</sc-for></div>
       </section>
-      <section class="pn">
+      <section class="pn t-gold">
         <div class="ph"><div><div class="eb">ACHIEVEMENTS</div><h2>成長成就</h2></div><span class="tiny dim">非金融成就，不代表收益</span></div>
         <div>
           <sc-for list="{{dash.ach}}" as="a" hint-placeholder-count="5">
@@ -360,6 +392,7 @@
     <div><div class="eb">WEALTH GARDEN</div><h1>財富花園</h1></div>
     <div class="acts"><button type="button" class="btn pri" onClick="{{h.newProject}}">@@I:leaf@@種下新計畫</button></div>
   </div>
+  <div class="gh-inline pn t-grn">@@GREENHOUSE@@</div>
   <div class="note c">@@IS:leaf@@<span>植物只依「已確認」的里程碑、實際收入與實際節省時間成長；預估收益、重複點擊或重複記帳都不會讓植物成長。這是視覺對應，不代表保證收益。</span></div>
   <div class="g gd">
     <div class="stack" style="gap: var(--gap)">

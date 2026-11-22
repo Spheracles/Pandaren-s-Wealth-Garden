@@ -2,7 +2,31 @@
 <div class="aura" aria-hidden="true"></div>
 <div class="floor" aria-hidden="true"></div>
 <div class="sweep" aria-hidden="true"></div>
-<div class="canopy" aria-hidden="true"><i class="cn tl"></i><i class="cn tr"></i><i class="cn bl"></i><i class="cn br"></i><i class="arch"></i></div>
+<div class="canopy" aria-hidden="true"><i class="cn tl"></i><i class="cn tr"></i><i class="cn bl"></i><i class="cn br"></i></div>
+
+<header class="cockpit-head" aria-label="駕駛艙狀態">
+  <div class="ch-left">
+    <span class="sigbars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span class="chan">{{ui.chan}}</span>
+    <span class="sigbars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  </div>
+  <div class="ch-mid">
+    <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+    <div class="plaque">
+      <svg class="laurel" viewBox="0 0 40 64" aria-hidden="true"><path d="M31 61C16 52 8 36 14 8"></path><path d="M14 10q-7 1-9 8 7-1 9-8z M12 20q-8 0-11 7 8 1 11-7z M12 31q-8-1-12 5 8 2 12-5z M14 42q-7-2-12 3 8 3 12-3z M19 52q-6-3-11 1 7 4 11-1z M17 14q6-3 9-10-7 2-9 10z M16 26q7-3 9-10-7 2-9 10z M17 38q7-2 10-9-7 1-10 9z M21 48q6-1 10-8-7 1-10 8z"></path></svg>
+      <div class="pl-text"><b>財富花園</b><span>WEALTH GARDEN</span></div>
+      <svg class="laurel r" viewBox="0 0 40 64" aria-hidden="true"><path d="M31 61C16 52 8 36 14 8"></path><path d="M14 10q-7 1-9 8 7-1 9-8z M12 20q-8 0-11 7 8 1 11-7z M12 31q-8-1-12 5 8 2 12-5z M14 42q-7-2-12 3 8 3 12-3z M19 52q-6-3-11 1 7 4 11-1z M17 14q6-3 9-10-7 2-9 10z M16 26q7-3 9-10-7 2-9 10z M17 38q7-2 10-9-7 1-10 9z M21 48q6-1 10-8-7 1-10 8z"></path></svg>
+    </div>
+    <span class="eq r" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+  </div>
+  <div class="ch-right">
+    <div class="ver hide-m"><span>財富花園 / Wealth Garden</span><b>{{ui.version}}</b></div>
+    <div class="clock"><span class="num">{{ui.date}}</span><b class="num">{{ui.clock}}</b></div>
+    <span class="ch-ic hide-m" title="{{ui.netLabel}}"><svg class="ico lg" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ic.signal}}"></path></svg></span>
+    <span class="ch-ic hide-m" title="資料存在這個瀏覽器（不是雲端）"><svg class="ico lg" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ic.cloud}}"></path></svg></span>
+  </div>
+</header>
+
 <div class="shell">
 
 <aside class="rail" aria-label="主要導覽">
@@ -17,11 +41,13 @@
       <div class="navg">{{g.label}}</div>
       <sc-for list="{{g.items}}" as="n" hint-placeholder-count="2">
         <button type="button" class="navi {{n.cls}}" aria-current="{{n.cur}}" style="--c: {{n.c}}" onClick="{{n.go}}">
+          <i class="lever" aria-hidden="true"><i class="stick"></i></i>
           <i class="lamp" aria-hidden="true"></i>
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="{{n.ic}}"></path></svg>
-          <span>{{n.label}}</span>
-          <sc-if value="{{n.badge}}" hint-placeholder-val="{{ false }}"><span class="badge">{{n.badge}}</span></sc-if>
-          <sc-if value="{{n.noBadge}}" hint-placeholder-val="{{ true }}"><span class="code">{{n.code}}</span></sc-if>
+          <span class="tab">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="{{n.ic}}"></path></svg>
+            <span class="nl"><b>{{n.label}}</b><small>{{n.code}}</small></span>
+            <sc-if value="{{n.badge}}" hint-placeholder-val="{{ false }}"><span class="badge">{{n.badge}}</span></sc-if>
+          </span>
         </button>
       </sc-for>
     </sc-for>
@@ -33,41 +59,107 @@
 </aside>
 
 <div class="main">
-  <header class="top">
-    <span class="mbrand show-m">WEALTH GARDEN</span>
-    <span class="chan hide-m" aria-hidden="true">{{ui.chan}}</span>
-    <span class="crumb hide-m"><b>{{ui.crumb}}</b><i class="caret" aria-hidden="true"></i></span>
-    <sc-if value="{{ui.demo}}" hint-placeholder-val="{{ true }}"><span class="led w" title="所有數字皆為虛構示範資料"><i></i>示範模式<span class="hide-m">・虛構資料</span></span></sc-if>
-    <sc-if value="{{ui.user}}" hint-placeholder-val="{{ false }}"><span class="led c"><i></i>個人模式</span></sc-if>
-    <span class="led hide-m" title="資料只存在這個瀏覽器，不是雲端資料庫"><i></i>儲存：{{ui.store}}</span>
-    <span class="led w hide-m"><i></i>AI 未連線</span>
-    <span class="sp"></span>
-    <button type="button" class="btn ghost sm hide-m" onClick="{{h.cmd}}">@@IS:search@@搜尋指令</button>
-    <button type="button" class="btn sm" aria-pressed="{{ui.privacy}}" onClick="{{h.privacy}}">
-      <sc-if value="{{ui.privacy}}" hint-placeholder-val="{{ false }}">@@IS:eyeoff@@</sc-if>
-      <sc-if value="{{ui.noPrivacy}}" hint-placeholder-val="{{ true }}">@@IS:eye@@</sc-if>
-      <span>{{ui.privLabel}}</span>
-    </button>
-    <sc-if value="{{ui.demo}}" hint-placeholder-val="{{ true }}"><button type="button" class="btn pri sm hide-m" onClick="{{h.useMine}}">使用我的資料</button></sc-if>
-    <button type="button" class="btn ghost sm hide-m {{ui.railCls}}" aria-pressed="{{ui.rail}}" aria-label="切換洞察面板" onClick="{{h.rail}}">@@IS:panel@@</button>
-  </header>
-  <sc-if value="{{ui.offline}}" hint-placeholder-val="{{ false }}">
-    <div class="offline" role="status">@@IS:wifi@@離線中：記帳、分析與花園照常運作，資料保存在這個瀏覽器；雲端與 AI 功能暫停。</div>
-  </sc-if>
+  <div class="screen">
+    <i class="bolt b1" aria-hidden="true"></i><i class="bolt b2" aria-hidden="true"></i><i class="bolt b3" aria-hidden="true"></i><i class="bolt b4" aria-hidden="true"></i>
+    <header class="top">
+      <span class="mbrand show-m">WEALTH GARDEN</span>
+      <span class="crumb hide-m"><b>{{ui.crumb}}</b><i class="caret" aria-hidden="true"></i></span>
+      <sc-if value="{{ui.demo}}" hint-placeholder-val="{{ true }}"><span class="led w" title="所有數字皆為虛構示範資料"><i></i>示範模式<span class="hide-m">・虛構資料</span></span></sc-if>
+      <sc-if value="{{ui.user}}" hint-placeholder-val="{{ false }}"><span class="led c"><i></i>個人模式</span></sc-if>
+      <span class="led hide-m led-store" title="資料只存在這個瀏覽器，不是雲端資料庫"><i></i>儲存：{{ui.store}}</span>
+      <span class="led w hide-m led-ai"><i></i>AI 未連線</span>
+      <span class="sp"></span>
+      <button type="button" class="btn ghost sm hide-m" aria-label="搜尋指令" onClick="{{h.cmd}}">@@IS:search@@<span class="lbl-l">搜尋指令</span></button>
+      <button type="button" class="btn sm" aria-pressed="{{ui.sfx}}" aria-label="駕駛艙音效" onClick="{{h.sfx}}">
+        <sc-if value="{{ui.sfx}}" hint-placeholder-val="{{ true }}">@@IS:sound@@</sc-if>
+        <sc-if value="{{ui.noSfx}}" hint-placeholder-val="{{ false }}">@@IS:mute@@</sc-if>
+        <span class="lbl-l">{{ui.sfxLabel}}</span>
+      </button>
+      <button type="button" class="btn sm" aria-pressed="{{ui.privacy}}" onClick="{{h.privacy}}">
+        <sc-if value="{{ui.privacy}}" hint-placeholder-val="{{ false }}">@@IS:eyeoff@@</sc-if>
+        <sc-if value="{{ui.noPrivacy}}" hint-placeholder-val="{{ true }}">@@IS:eye@@</sc-if>
+        <span>{{ui.privLabel}}</span>
+      </button>
+      <sc-if value="{{ui.demo}}" hint-placeholder-val="{{ true }}"><button type="button" class="btn pri sm hide-m" onClick="{{h.useMine}}">使用我的資料</button></sc-if>
+      <button type="button" class="btn ghost sm hide-m {{ui.railCls}}" aria-pressed="{{ui.rail}}" aria-label="切換溫室與洞察面板" onClick="{{h.rail}}">@@IS:panel@@</button>
+    </header>
+    <sc-if value="{{ui.offline}}" hint-placeholder-val="{{ false }}">
+      <div class="offline" role="status">@@IS:wifi@@離線中：記帳、分析與花園照常運作，資料保存在這個瀏覽器；雲端與 AI 功能暫停。</div>
+    </sc-if>
 
-  <main class="content">
-  <sc-if value="{{hasPageErr}}" hint-placeholder-val="{{ false }}">
-    <div class="pn stack"><h1>這個畫面發生錯誤</h1><p class="mut">你的財務資料沒有被修改。可以切換到其他頁面，或回到總覽。</p><div class="num small neg">{{pageErr}}</div><div class="acts"><button type="button" class="btn pri" onClick="{{go.dashboard}}">回到總覽</button></div></div>
-  </sc-if>
+    <main class="content {{ui.outCls}}">
+    <sc-if value="{{hasPageErr}}" hint-placeholder-val="{{ false }}">
+      <div class="pn stack"><h1>這個畫面發生錯誤</h1><p class="mut">你的財務資料沒有被修改。可以切換到其他頁面，或回到總覽。</p><div class="num small neg">{{pageErr}}</div><div class="acts"><button type="button" class="btn pri" onClick="{{go.dashboard}}">回到總覽</button></div></div>
+    </sc-if>
 
 @@PAGES@@
 
-  </main>
+    </main>
+  </div>
+
+  <section class="console {{ui.outCls}} {{ui.deskCls}}" aria-label="駕駛艙儀表台">
+    <button type="button" class="desk-tog" aria-expanded="{{ui.deskOpen}}" onClick="{{h.desk}}">{{ui.deskLabel}}</button>
+    <div class="desk">
+      <div class="pod pod-radar" aria-hidden="true">
+        <div class="scope"><i class="beam"></i><i class="blip"></i><i class="blip"></i><i class="blip"></i></div>
+        <span class="plate">LIDAR · 掃描</span>
+      </div>
+      <div class="pod pod-keys" aria-hidden="true">
+        <div class="keys"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="slots"><i></i><i></i><i></i></div>
+      </div>
+      <div class="pod pod-gauges" role="group" aria-label="儀表：儲蓄率、預算使用、心力">
+        <sc-for list="{{cons.gauges}}" as="gg" hint-placeholder-count="3">
+          <div class="gauge" role="img" aria-label="{{gg.label}} {{gg.val}}（{{gg.sub}}）">
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <path class="gtrack" d="M18.8 72.0 A36 36 0 1 1 81.2 72.0"></path>
+              <path class="gfill" d="M18.8 72.0 A36 36 0 1 1 81.2 72.0" style="stroke: {{gg.color}}; stroke-dasharray: {{gg.da}}"></path>
+              <path class="gtick" d="M18.8 72.0L24.0 69.0 M14.0 54.0L18.0 54.0 M18.8 36.0L24.0 39.0 M32.0 22.8L34.0 26.3 M50.0 18.0L50.0 24.0 M68.0 22.8L66.0 26.3 M81.2 36.0L76.0 39.0 M86.0 54.0L82.0 54.0 M81.2 72.0L76.0 69.0"></path>
+            </svg>
+            <i class="needle" style="transform: rotate({{gg.deg}}deg)"></i>
+            <i class="hub"></i>
+            <span class="gv num">{{gg.val}}</span>
+            <span class="gname"><b>{{gg.label}}</b><small>{{gg.sub}}</small></span>
+          </div>
+        </sc-for>
+      </div>
+      <div class="seat" aria-hidden="true">
+        <svg viewBox="0 0 200 170">
+          <defs>
+            <linearGradient id="wg-seat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color: #3A2A44"></stop><stop offset="1" style="stop-color: #120C1C"></stop></linearGradient>
+            <linearGradient id="wg-seat-side" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color: #2A2236"></stop><stop offset="1" style="stop-color: #4A3A58"></stop></linearGradient>
+          </defs>
+          <path d="M70 6h60a14 14 0 0 1 14 14v18a10 10 0 0 1-10 10H66a10 10 0 0 1-10-10V20A14 14 0 0 1 70 6z" style="fill: url(#wg-seat); stroke: #6B5A7E; stroke-width: 1.5"></path>
+          <path d="M84 48h32v10H84z" style="fill: #1A1424; stroke: #4A3A58"></path>
+          <path d="M26 74q2-18 22-18l-4 114H20z M174 74q-2-18-22-18l4 114h24z" style="fill: url(#wg-seat-side); stroke: #6B5A7E; stroke-width: 1.5"></path>
+          <path d="M46 70q0-12 14-14h80q14 2 14 14l6 100H40z" style="fill: url(#wg-seat); stroke: #7A6890; stroke-width: 1.5"></path>
+          <path d="M52 92h96 M50 116h100 M48 140h104 M100 58v112" style="fill: none; stroke: rgba(255,255,255,.08); stroke-width: 2"></path>
+          <path d="M100 86a20 20 0 1 0 0.01 0z" style="fill: #0B1640; stroke: #35E0FF; stroke-width: 2; filter: drop-shadow(0 0 6px rgba(53,224,255,.8))"></path>
+          <path d="M92 114c0-9 4-16 16-17-1 10-6 15-16 17z M92 114l8-8" style="fill: none; stroke: #35E0FF; stroke-width: 2.4; stroke-linecap: round; filter: drop-shadow(0 0 4px rgba(53,224,255,.9))"></path>
+        </svg>
+      </div>
+      <div class="pod pod-throttle" aria-hidden="true">
+        <div class="lev"><i></i></div><div class="lev l2"><i></i></div>
+        <div class="slots"><i></i><i></i></div>
+      </div>
+      <div class="pod pod-screen">
+        <div class="mini" role="img" aria-label="近 6 個月現金流，本月 {{cons.flowVal}}">
+          <span class="mini-h">CASH FLOW · 6M</span>
+          <svg viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline points="{{cons.flow}}"></polyline></svg>
+          <b class="num {{cons.flowCls}}">{{cons.flowVal}}</b>
+        </div>
+        <div class="knobs" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      </div>
+    </div>
+  </section>
 </div>
 
-<sc-if value="{{ui.rail}}" hint-placeholder-val="{{ false }}">
-<aside class="side" aria-label="AI 洞察面板">
-  <div class="flex between"><div><div class="eb">INSIGHTS</div><h2>洞察</h2></div><button type="button" class="btn ghost sm" aria-label="收合洞察面板" onClick="{{h.rail}}">@@IS:x@@</button></div>
+<sc-if value="{{ui.rail}}" hint-placeholder-val="{{ true }}">
+<aside class="side" aria-label="生態溫室與洞察">
+  <div class="flex between"><div class="eb">SIDE MODULE</div><button type="button" class="btn ghost sm" aria-label="收合溫室與洞察面板" onClick="{{h.rail}}">@@IS:x@@</button></div>
+  @@GREENHOUSE@@
+  <div class="hr"></div>
+  <div><div class="eb">INSIGHTS</div><h2>洞察</h2></div>
   <div class="note">@@IS:bolt@@<span>AI 未連線。以下由規則式統計產生，是建議而非已實現成果。</span></div>
   <sc-for list="{{side.insights}}" as="i" hint-placeholder-count="3">
     <button type="button" class="ins" onClick="{{i.go}}"><span class="flex between"><b>{{i.title}}</b><span class="chip {{i.tone}}">建議</span></span><span>{{i.body}}</span><span class="tiny dim">{{i.basis}}</span></button>

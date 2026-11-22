@@ -143,7 +143,8 @@ function sparksCss() {
 }
 
 export function templateBody() {
-  const body = read('template.html').replace('@@PAGES@@', () => read('pages.html')).replace('@@DIALOGS@@', () => read('dialogs.html'));
+  const body = read('template.html').replace('@@PAGES@@', () => read('pages.html')).replace('@@DIALOGS@@', () => read('dialogs.html'))
+    .replace(/@@GREENHOUSE@@/g, () => read('greenhouse.html'));
   return expand(body);
 }
 
