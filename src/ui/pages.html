@@ -38,7 +38,7 @@
         <div class="ph"><div><div class="eb">ASSETS</div><h2>資產配置</h2></div><span class="tiny dim">點選類別看明細</span></div>
         <div class="donut-wrap">
           <svg class="donut" viewBox="0 0 180 180" role="img" aria-label="資產結構環形圖">
-            <circle cx="90" cy="90" r="62" style="fill: none; stroke: rgba(0,60,70,.14); stroke-width: 18"></circle>
+            <circle cx="90" cy="90" r="62" style="fill: none; stroke: var(--x-track); stroke-width: 18"></circle>
             @@ARC:cash@@
             @@ARC:bank@@
             @@ARC:invest@@
@@ -54,7 +54,7 @@
           </div>
         </div>
         <sc-if value="{{dash.drillShow}}" hint-placeholder-val="{{ false }}">
-          <div class="stack" style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(0,60,70,.2); gap: 6px">
+          <div class="stack" style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--x-soft); gap: 6px">
             <span class="tiny dim">{{dash.drillTitle}}</span>
             <sc-for list="{{dash.drill}}" as="d" hint-placeholder-count="2"><div class="flex between small"><span>{{d.name}}</span><span class="num">{{d.val}}</span></div></sc-for>
             <sc-if value="{{dash.drillEmpty}}" hint-placeholder-val="{{ false }}"><span class="small dim">此類別沒有項目。</span></sc-if>
@@ -136,7 +136,7 @@
           <polygon class="rg" points="{{dash.radar.r2}}"></polygon>
           <polygon class="rg" points="{{dash.radar.r3}}"></polygon>
           <path class="rg" d="{{dash.radar.spokes}}"></path>
-          <polygon points="{{dash.radar.poly}}" style="fill: rgba(91,44,145,.16); stroke: #5B2C91; stroke-width: 1.8"></polygon>
+          <polygon points="{{dash.radar.poly}}" style="fill: var(--x-radar-f); stroke: var(--x-radar); stroke-width: var(--x-radar-w); filter: var(--x-radar-glow)"></polygon>
           <path d="{{dash.radar.dots}}" style="fill: {{t.acc}}"></path>
           @@RLABEL:0@@
           @@RLABEL:1@@
@@ -561,7 +561,7 @@
     <div class="stack">
       <sc-for list="{{ai.pending}}" as="s" hint-placeholder-count="1">
         <article class="sugg">
-          <div class="flex between" style="align-items: flex-start"><div class="stack2"><span class="eb" style="color: #4A2380">{{s.source}}</span><h2>{{s.title}}</h2></div><span class="chip v">草案・待核准</span></div>
+          <div class="flex between" style="align-items: flex-start"><div class="stack2"><span class="eb" style="color: var(--x-draft)">{{s.source}}</span><h2>{{s.title}}</h2></div><span class="chip v">草案・待核准</span></div>
           @@KV:s.rows:kv@@
           <div class="stack2"><span class="small dim">執行步驟</span><ol><sc-for list="{{s.steps}}" as="sp" hint-placeholder-count="3"><li>{{sp.t}}</li></sc-for></ol></div>
           <div class="dlg-f"><button type="button" class="btn danger" onClick="{{s.reject}}">駁回</button><button type="button" class="btn pri" onClick="{{s.approve}}">@@IS:check@@核准並建立計畫</button></div>
@@ -631,7 +631,7 @@
   <section class="pn">
     <div class="rows">
       <sc-for list="{{ntf.list}}" as="n" hint-placeholder-count="6">
-        <button type="button" class="row click" style="opacity: {{n.op}}" onClick="{{n.go}}"><span class="chip {{n.tone}}">{{n.type}}</span><span class="grow small">{{n.text}}</span><sc-if value="{{n.unread}}" hint-placeholder-val="{{ true }}"><i class="swatch" style="background: #5B2C91; border-radius: 50%"></i></sc-if></button>
+        <button type="button" class="row click" style="opacity: {{n.op}}" onClick="{{n.go}}"><span class="chip {{n.tone}}">{{n.type}}</span><span class="grow small">{{n.text}}</span><sc-if value="{{n.unread}}" hint-placeholder-val="{{ true }}"><i class="swatch" style="background: var(--x-unread); border-radius: 50%"></i></sc-if></button>
       </sc-for>
     </div>
     <sc-if value="{{ntf.none}}" hint-placeholder-val="{{ false }}"><div class="empty">目前沒有通知。</div></sc-if>
@@ -649,6 +649,18 @@
     <div class="ph"><div><div class="eb">LOCAL &amp; CLOUD</div><h2>資料位置與帳號</h2></div><span class="chip w">網頁版</span></div>
     <div class="note" style="margin-bottom: 12px">@@IS:shield@@<span>這是可直接在瀏覽器使用的網頁版（PWA，可加入主畫面、離線開啟）：沒有帳號登入，資料只保存在你目前的瀏覽器，不會上傳，也不會同步到其他裝置。多人帳號、資料隔離與雲端備份需要部署後端後才會開放。</span></div>
     <dl class="kv"><dt>資料位置</dt><dd>{{set.storage}}</dd><dt>登入狀態</dt><dd>未登入（網頁版目前不提供帳號）</dd><dt>版本</dt><dd class="num">{{set.version}}</dd></dl>
+  </section>
+  <section class="pn" aria-label="介面風格">
+    <div class="ph"><div><div class="eb">COCKPIT STYLE</div><h2>介面風格</h2></div><span class="chip c">{{set.themeNow}}</span></div>
+    <div class="theme-row" role="group" aria-label="選擇介面風格">
+      <sc-for list="{{set.themes}}" as="o" hint-placeholder-count="2">
+        <button type="button" class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">
+          <span class="theme-pv" aria-hidden="true"><i></i><i></i><i></i><b></b></span>
+          <span class="theme-tx"><b>{{o.label}}</b><small class="mono">{{o.code}}</small><span class="small">{{o.desc}}</span></span>
+        </button>
+      </sc-for>
+    </div>
+    <p class="tiny dim" style="margin-top: 10px">只改變外觀；所有數字、功能與儀表台都相同。選擇只記在這個瀏覽器，不屬於財務資料。也可以在指令面板輸入 /style 切換。</p>
   </section>
   <div class="g g2">
     <section class="pn">

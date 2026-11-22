@@ -3,14 +3,14 @@
   <div class="gh-stage">
     <svg class="gh-back" viewBox="0 0 300 230" aria-hidden="true">
       <defs>
-        <radialGradient id="gh-in" cx="50%" cy="92%" r="80%"><stop offset="0" style="stop-color: rgba(10,107,69,.22)"></stop><stop offset=".55" style="stop-color: rgba(150,235,245,.45)"></stop><stop offset="1" style="stop-color: rgba(205,244,248,.35)"></stop></radialGradient>
+        <radialGradient id="gh-in" cx="50%" cy="92%" r="80%"><stop offset="0" style="stop-color: var(--gh-in0)"></stop><stop offset=".55" style="stop-color: var(--gh-in1)"></stop><stop offset="1" style="stop-color: var(--gh-in2)"></stop></radialGradient>
         <linearGradient id="gh-soil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color: #23402F"></stop><stop offset="1" style="stop-color: #0B1510"></stop></linearGradient>
       </defs>
       <path d="M20 196 A130 160 0 0 1 280 196 Z" style="fill: url(#gh-in)"></path>
-      <path d="M150 36 A65 160 0 0 1 215 196 M150 36 A105 160 0 0 1 255 196 M150 36 A65 160 0 0 0 85 196 M150 36 A105 160 0 0 0 45 196" style="fill: none; stroke: rgba(14,16,19,.2); stroke-width: 1"></path>
+      <path d="M150 36 A65 160 0 0 1 215 196 M150 36 A105 160 0 0 1 255 196 M150 36 A65 160 0 0 0 85 196 M150 36 A105 160 0 0 0 45 196" style="fill: none; stroke: var(--gh-rib); stroke-width: 1"></path>
       <path class="gh-lamp" d="M96 74 Q150 56 204 74" style="fill: none; stroke: #FF8FE0; stroke-width: 3; stroke-linecap: round"></path>
       <path class="gh-lamp" d="M118 96 Q150 86 182 96" style="fill: none; stroke: #B58CFF; stroke-width: 2.4; stroke-linecap: round"></path>
-      <path d="M36 196 A114 22 0 0 1 264 196 A114 22 0 0 1 36 196 Z" style="fill: url(#gh-soil); stroke: #0E1013; stroke-width: 1.6"></path>
+      <path d="M36 196 A114 22 0 0 1 264 196 A114 22 0 0 1 36 196 Z" style="fill: url(#gh-soil); stroke: var(--gh-soil-s); stroke-width: var(--gh-soil-w)"></path>
     </svg>
     <div class="gh-bed">
       <sc-for list="{{gh.plants}}" as="p" hint-placeholder-count="5">
@@ -20,20 +20,20 @@
       <span class="gh-motes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
     </div>
     <svg class="gh-front" viewBox="0 0 300 230" aria-hidden="true">
-      <path d="M20 196 A130 160 0 0 1 280 196 Z" style="fill: rgba(205,244,250,.14)"></path>
-      <path d="M25.5 150 A124.5 12 0 0 0 274.5 150 M46 100 A104 10 0 0 0 254 100 M79 62 A71 7 0 0 0 221 62" style="fill: none; stroke: rgba(14,16,19,.32); stroke-width: 1.2"></path>
-      <path d="M150 36 V196 M150 36 A55 160 0 0 0 95 196 M150 36 A55 160 0 0 1 205 196" style="fill: none; stroke: rgba(14,16,19,.28); stroke-width: 1.2"></path>
-      <path class="gh-rim" d="M20 196 A130 160 0 0 1 280 196" style="fill: none; stroke: #0E1013; stroke-width: 3"></path>
+      <path d="M20 196 A130 160 0 0 1 280 196 Z" style="fill: var(--gh-glass)"></path>
+      <path d="M25.5 150 A124.5 12 0 0 0 274.5 150 M46 100 A104 10 0 0 0 254 100 M79 62 A71 7 0 0 0 221 62" style="fill: none; stroke: var(--gh-ring); stroke-width: 1.2"></path>
+      <path d="M150 36 V196 M150 36 A55 160 0 0 0 95 196 M150 36 A55 160 0 0 1 205 196" style="fill: none; stroke: var(--gh-merid); stroke-width: 1.2"></path>
+      <path class="gh-rim" d="M20 196 A130 160 0 0 1 280 196" style="fill: none; stroke: var(--gh-rim); stroke-width: var(--gh-rim-w)"></path>
       <path d="M52 150 Q58 86 112 52" style="fill: none; stroke: rgba(255,255,255,.42); stroke-width: 7; stroke-linecap: round"></path>
       <path d="M68 162 Q74 108 104 80" style="fill: none; stroke: rgba(255,255,255,.22); stroke-width: 3; stroke-linecap: round"></path>
-      <path d="M142 32 h16 v6 h-16 z" style="fill: #B4B9C1; stroke: #0E1013; stroke-width: 1.6"></path>
-      <path d="M12 196 A138 20 0 0 0 288 196" style="fill: none; stroke: #0E1013; stroke-width: 3.2"></path>
+      <path d="M142 32 h16 v6 h-16 z" style="fill: var(--gh-cap); stroke: var(--gh-cap-s); stroke-width: var(--gh-cap-w)"></path>
+      <path d="M12 196 A138 20 0 0 0 288 196" style="fill: none; stroke: var(--gh-arc); stroke-width: var(--gh-arc-w)"></path>
     </svg>
     <div class="gh-base" aria-hidden="true"><i class="gh-led"></i></div>
   </div>
   <div class="gh-read">
     <div class="stack2"><span class="tiny dim">淨資產 12 個月</span><b class="num {{gh.deltaCls}}">{{gh.delta}}</b></div>
-    <svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline points="{{gh.spark}}" style="stroke: #06472D"></polyline></svg>
+    <svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline points="{{gh.spark}}" style="stroke: var(--gh-spark)"></polyline></svg>
   </div>
   <div class="tiny dim">成熟植物 {{gh.mature}} 株 · 已驗證里程碑 {{gh.verified}} 個</div>
   <p class="tiny dim">植物只依已驗證的里程碑與實際收入成長，預估收益不會讓它長大。</p>

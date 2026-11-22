@@ -68,6 +68,19 @@ try {
   const after = await page.evaluate(() => JSON.parse(localStorage.getItem('wealth-garden-design-v2')).projects.length);
   check(after === before + 1, '草案經核准後才建立計畫');
 
+  await page.click('.rail .navi >> nth=9');
+  await page.waitForTimeout(700);
+  check(await page.$eval('.wg', (e) => e.classList.contains('th-ink')), '預設為漫畫墨線風格');
+  await page.click('.theme-opt.to-neon');
+  await page.waitForTimeout(400);
+  await page.reload(); await page.waitForSelector('.wg');
+  check(await page.$eval('.wg', (e) => e.classList.contains('th-neon')) && (await page.evaluate(() => localStorage.getItem('wg-theme'))) === 'neon', '切換為霓虹駕駛艙風格，重新整理後仍保留');
+  await page.click('.rail .navi >> nth=9');
+  await page.waitForTimeout(700);
+  await page.click('.theme-opt.to-ink');
+  await page.waitForTimeout(400);
+  check(await page.$eval('.wg', (e) => e.classList.contains('th-ink')), '切換回漫畫墨線風格');
+
   const sw = await page.evaluate(async () => { const r = await navigator.serviceWorker.getRegistration(); return !!r; });
   check(sw, 'Service Worker 已註冊（離線可用）');
   check(errors.length === 0, `沒有執行錯誤${errors.length ? '：' + errors.join(' / ') : ''}`);
